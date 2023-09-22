@@ -6,6 +6,23 @@ PATH_RAW_DATA_LOCATION = "data/raw/"
 
 
 def get_raw_data():
+    """
+    Utility function to load the raw data from the data/raw folder.
+
+    Returns:
+        train_a (pd.DataFrame): The training targets for the A dataset.
+        train_b (pd.DataFrame): The training targets for the B dataset.
+        train_c (pd.DataFrame): The training targets for the C dataset.
+        X_train_estimated_a (pd.DataFrame): The estimated training features for the A dataset.
+        X_train_estimated_b (pd.DataFrame): The estimated training features for the B dataset.
+        X_train_estimated_c (pd.DataFrame): The estimated training features for the C dataset.
+        X_train_observed_a (pd.DataFrame): The observed training features for the A dataset.
+        X_train_observed_b (pd.DataFrame): The observed training features for the B dataset.
+        X_train_observed_c (pd.DataFrame): The observed training features for the C dataset.
+        X_test_estimated_a (pd.DataFrame): The estimated test features for the A dataset.
+        X_test_estimated_b (pd.DataFrame): The estimated test features for the B dataset.
+        X_test_estimated_c (pd.DataFrame): The estimated test features for the C dataset.
+    """
     train_a = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}A/train_targets.parquet')
     train_b = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}B/train_targets.parquet')
     train_c = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}C/train_targets.parquet')
