@@ -1,0 +1,27 @@
+import os
+import pandas as pd
+import numpy as np
+
+PATH_RAW_DATA_LOCATION = "data/raw/"
+
+
+def get_raw_data():
+    train_a = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}A/train_targets.parquet')
+    train_b = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}B/train_targets.parquet')
+    train_c = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}C/train_targets.parquet')
+    X_train_estimated_a = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}A/X_train_estimated.parquet')
+    X_train_estimated_b = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}B/X_train_estimated.parquet')
+    X_train_estimated_c = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}C/X_train_estimated.parquet')
+    X_train_observed_a = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}A/X_train_observed.parquet')
+    X_train_observed_b = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}B/X_train_observed.parquet')
+    X_train_observed_c = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}C/X_train_observed.parquet')
+    X_test_estimated_a = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}A/X_test_estimated.parquet')
+    X_test_estimated_b = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}B/X_test_estimated.parquet')
+    X_test_estimated_c = pd.read_parquet(f'{PATH_RAW_DATA_LOCATION}C/X_test_estimated.parquet')
+
+    return train_a, train_b, train_c, X_train_estimated_a, X_train_estimated_b, X_train_estimated_c, X_train_observed_a, X_train_observed_b, X_train_observed_c, X_test_estimated_a, X_test_estimated_b, X_test_estimated_c
+
+
+if __name__ == "__main__":
+    data = get_raw_data()
+    print(data[0].head())
