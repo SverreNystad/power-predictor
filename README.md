@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/SverreNystad/power-predictor/build_and_test.yml)
+![Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/SverreNystad/power-predictor/python-package.yml)
 [![codecov.io](https://codecov.io/github/SverreNystad/power-predictor/coverage.svg?branch=main)](https://codecov.io/github/SverreNystad/power-predictor?branch=main)
 ![ML power predictor top language](https://img.shields.io/github/languages/top/SverreNystad/power-predictor)
 ![GitHub language count](https://img.shields.io/github/languages/count/SverreNystad/power-predictor)
