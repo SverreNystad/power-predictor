@@ -1,11 +1,11 @@
-# PROJECT NAME
+# ML power predictor  
 
 <div align="center">
 
-![Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/SverreNystad/power-predicter/build_and_test.yml)
-[![codecov.io](https://codecov.io/github/SverreNystad/power-predicter/coverage.svg?branch=main)](https://codecov.io/github/SverreNystad/power-predicter?branch=main)
-![GPT-dungeon-master top language](https://img.shields.io/github/languages/top/SverreNystad/power-predicter)
-![GitHub language count](https://img.shields.io/github/languages/count/SverreNystad/power-predicter)
+![Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/SverreNystad/power-predictor/build_and_test.yml)
+[![codecov.io](https://codecov.io/github/SverreNystad/power-predictor/coverage.svg?branch=main)](https://codecov.io/github/SverreNystad/power-predictor?branch=main)
+![ML power predictor top language](https://img.shields.io/github/languages/top/SverreNystad/power-predictor)
+![GitHub language count](https://img.shields.io/github/languages/count/SverreNystad/power-predictor)
 [![Project Version](https://img.shields.io/badge/version-0.0.1-blue)](https://img.shields.io/badge/version-0.0.1-blue)
 
 </div>
