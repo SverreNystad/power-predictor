@@ -37,15 +37,13 @@
 
 
 ## Usage
-
-```bash
-python src/main.py
-```
+After installing the project, run the jupyter notebook in the exploration directory of the project.
 
 ## Installation
 To install the PROJECT NAME, one needs to have all the prerequisites installed and set up, and follow the setup guild. The following sections will guide you through the process.
 ### Prerequisites
 - Python 3.9 or higher
+- Jupyter Notebook
   
 
 ### Setup
@@ -88,6 +86,26 @@ If you do not want to run api tests, run the following command instead:
 pytest -m "not apitest" --cov
 ```
 
-### License
+## License
 Licensed under the [MIT License](LICENSE). Because this is a template repository, you need to change the license if you want to use it for your own project.
 
+## Folder Structure
+
+### **Data:** All data used for the project.
+* **data/raw:** Original, immutable data dump.
+* **data/processed:** Cleaned and pre-processed data used for modeling.
+* **data/external:** External data sources or additional datasets.
+* **data/interim:** Intermediate data that has been transformed.
+
+### **Exploration:** Jupyter notebooks for exploratory data analysis.
+
+
+### **Results:** Generated analysis as HTML, PDF, LaTeX, etc.
+
+### **src:** Source code for use in this project.
+* **src/data:** Scripts to download or generate data. From Data/raw or Data/processed to object that can be worked with.
+* **src/features:** Scripts to turn raw data into features for modeling.
+* **src/models:** Scripts to train models and then use trained models to make predictions.
+* **src/visualization:** Scripts to create exploratory and results oriented visualizations.
+
+### **tests:** Unit tests for the project source code.
