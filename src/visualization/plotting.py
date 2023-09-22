@@ -21,6 +21,8 @@ def plot_single_feature(feature_name: str) -> None:
     X_train_estimated_c[['date_forecast', feature_name]].set_index('date_forecast').plot(ax=axs[2], title='Train/Test  C', color='blue')
     X_test_estimated_c[['date_forecast', feature_name]].set_index('date_forecast').plot(ax=axs[2], title='Train/Test  C', color='green')
 
+    plt.ylabel(feature_name)
+    plt.xlabel('Date')
 
 if __name__ == '__main__':
     plot_single_feature('absolute_humidity_2m:gm3')
