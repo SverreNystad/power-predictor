@@ -2,10 +2,10 @@
 
 <div align="center">
 
-![Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/USERNAME/REPONAME/build_and_test.yml)
-[![codecov.io](https://codecov.io/github/USERNAME/REPONAME/coverage.svg?branch=main)](https://codecov.io/github/USERNAME/REPONAME?branch=main)
-![GPT-dungeon-master top language](https://img.shields.io/github/languages/top/USERNAME/REPONAME)
-![GitHub language count](https://img.shields.io/github/languages/count/USERNAME/REPONAME)
+![Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/SverreNystad/power-predicter/build_and_test.yml)
+[![codecov.io](https://codecov.io/github/SverreNystad/power-predicter/coverage.svg?branch=main)](https://codecov.io/github/SverreNystad/power-predicter?branch=main)
+![GPT-dungeon-master top language](https://img.shields.io/github/languages/top/SverreNystad/power-predicter)
+![GitHub language count](https://img.shields.io/github/languages/count/SverreNystad/power-predicter)
 [![Project Version](https://img.shields.io/badge/version-0.0.1-blue)](https://img.shields.io/badge/version-0.0.1-blue)
 
 </div>
