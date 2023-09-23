@@ -9,6 +9,12 @@ PATH_TO_RESULTS: str = "results/output/"
 COMPETITION_NAME: str = "solar-energy-prediction-forecasting-competition"
 
 def submit_newest_to_kaggle(message: str) -> None:
+    """
+    Submit the newest CSV file to Kaggle.
+    
+    args:
+        message (str): The message that will accompany the submission.
+    """
     newest_submission = get_newest_submission(PATH_TO_RESULTS)
     if newest_submission is None:
         logger.error("No CSV files found in the results directory!")
