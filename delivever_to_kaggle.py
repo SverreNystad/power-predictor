@@ -11,7 +11,7 @@ COMPETITION_NAME: str = "solar-energy-prediction-forecasting-competition"
 def submit_newest_to_kaggle(message: str) -> None:
     """
     Submit the newest CSV file to Kaggle.
-    
+
     args:
         message (str): The message that will accompany the submission.
     """
@@ -74,7 +74,14 @@ def submit_to_kaggle(file_name: str, message: str, suffix: str = ".csv") -> None
     api.competition_submit(csv_file_path, message, COMPETITION_NAME)
     logger.info(f"File {csv_file_path} successfully submitted to {COMPETITION_NAME}!")
 
-def get_kaggle_credentials():
+def get_kaggle_credentials() -> tuple[str, str]:
+    """
+    Get the Kaggle credentials from the kaggle.json file.
+    
+    Returns:
+    - username (str): The username of the Kaggle user.
+    - key (str): The Kaggle API key.
+    """
     # Path to the kaggle.json file (default location)
     kaggle_json_path = os.path.join(os.path.expanduser("~"), ".kaggle", "kaggle.json")
     
