@@ -10,11 +10,29 @@ PATH_TO_RESULTS = "results/output/"
 def submit_newest_to_kaggle(message: str) -> None:
     newest_submission = get_newest_submission(PATH_TO_RESULTS)
     if newest_submission is None:
-        logger.info("No CSV files found in the results directory!")
+        logger.error("No CSV files found in the results directory!")
         return
     logger.info(f"Newest submission: {newest_submission}")
     print(f"Newest submission: {newest_submission}")
     submit_to_kaggle(newest_submission, message)
+
+
+def get_newest_submission(directory: str) -> str:
+     # List all files in the directory
+    all_files = os.listdir(directory)
+    
+    # Filter out files that are not CSVs
+    csv_files = [f for f in all_files if f.endswith('.csv')]
+    
+    # If there are no CSV files, return None
+    if not csv_files:
+        return None
+    
+    # Sort the CSV files by modification time
+    newest_csv = max(csv_files, key=lambda f: os.path.getmtime(os.path.join(directory, f)))
+    
+    return newest_csv
+
 
 def submit_to_kaggle(file_name: str, message: str, suffix: str = ".csv") -> None:
     """
@@ -66,22 +84,6 @@ def get_kaggle_credentials():
         key = credentials.get("key")
     logger.info(f"Successfully retrieved Kaggle credentials for user {username}!")
     return username, key
-
-def get_newest_submission(directory: str) -> str:
-     # List all files in the directory
-    all_files = os.listdir(directory)
-    
-    # Filter out files that are not CSVs
-    csv_files = [f for f in all_files if f.endswith('.csv')]
-    
-    # If there are no CSV files, return None
-    if not csv_files:
-        return None
-    
-    # Sort the CSV files by modification time
-    newest_csv = max(csv_files, key=lambda f: os.path.getmtime(os.path.join(directory, f)))
-    
-    return newest_csv
 
 if __name__ == "__main__":
     # Submit the newest CSV file to Kaggle
