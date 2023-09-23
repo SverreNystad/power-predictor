@@ -5,7 +5,8 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 
 # Set up logging
 logger = logging.getLogger(__name__)
-PATH_TO_RESULTS = "results/output/"
+PATH_TO_RESULTS: str = "results/output/"
+COMPETITION_NAME: str = "solar-energy-prediction-forecasting-competition"
 
 def submit_newest_to_kaggle(message: str) -> None:
     newest_submission = get_newest_submission(PATH_TO_RESULTS)
@@ -54,14 +55,12 @@ def submit_to_kaggle(file_name: str, message: str, suffix: str = ".csv") -> None
     api.authenticate()
 
     # Get the newest submission
-    PATH_TO_RESULTS = "results/output/"
     csv_file_path  = PATH_TO_RESULTS + file_name
     
     # Add the suffix if it's not already there
     if not csv_file_path.endswith(suffix):
         csv_file_path += suffix
 
-    COMPETITION_NAME: str = "solar-energy-prediction-forecasting-competition"
     api.competition_download_files(COMPETITION_NAME)
     # Submit the CSV file
     logger.info(f"Submitting {csv_file_path} to {COMPETITION_NAME}, with message: {message}...")
