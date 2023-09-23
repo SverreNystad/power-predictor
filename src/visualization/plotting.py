@@ -102,4 +102,62 @@ if __name__ == '__main__':
             continue
         scatter_plot(str(feature))
 
+def plot_moving_average(series, window, plot_intervals=False, scale=1.96, title="Moving Average Trend"):
+    """
+    Compute and plot moving average for given series. 
+    For the moving average, we take the average of the past few days of the time series.
+    This is good for smoothing out short-term flucuations and highlighting long-term trends.
+    And trend analysis is what we are after.
+
+    Args: 
+        series - dataset with timeseries
+        window - rolling window size 
+        plot_intervals - show confidence intervals
+        scale - scaling factor for confidence intervals
+    """
+    rolling_mean = series.rolling(window=window).mean()
     
+    plt.figure(figsize=(15,5))
+    plt.title(title)
+    plt.plot(rolling_mean, 'g', label='Rolling Mean Trend')
+    
+    # Plot confidence intervals for the moving average
+    if plot_intervals:
+        mae = series.rolling(window=window).std()
+        deviation = mae * scale
+        lower_bound = rolling_mean - deviation
+        upper_bound = rolling_mean + deviation
+        plt.fill_between(x=series.index, y1=lower_bound, y2=upper_bound, color='b', alpha=0.2)
+    
+    plt.plot(series, label='Actual values')
+    plt.legend(loc='best')
+    plt.grid(True)
+    plt.show()
+
+def detect_outliers(target_series, title: str):
+    """
+    Detects outliers in a time series using the IQR method and plots the time series with outliers highlighted.
+    
+    Args:
+    - target_series: A pandas Series representing the time series data.
+    
+    Returns:
+    - A plot of the time series with outliers highlighted in red.
+    """
+    
+    # IQR method for outlier detection
+    Q1 = target_series.quantile(0.25)
+    Q3 = target_series.quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+
+    outliers = target_series[(target_series < lower_bound) | (target_series > upper_bound)]
+
+    # Plotting the time series and outliers
+    plt.figure(figsize=(15,6))
+    plt.plot(target_series.index, target_series, label='Target Values', color='blue')
+    plt.scatter(outliers.index, outliers, color='red', label='Outliers')
+    plt.title(title)
+    plt.legend()
+    plt.show()
