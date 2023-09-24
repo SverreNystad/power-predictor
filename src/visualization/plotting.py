@@ -2,6 +2,8 @@ from src.data.data_fetcher import get_all_features, get_raw_data
 import matplotlib.pylab as plt
 import pandas as pd
 import seaborn as sns
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.graphics.tsaplots import plot_acf
 
 FIGURE_PATH = "results/figures/"
 
@@ -161,3 +163,38 @@ def detect_outliers(target_series, title: str):
     plt.title(title)
     plt.legend()
     plt.show()
+
+
+def seasonal_trends(targets: pd.DataFrame, title: str, show: bool = False):
+    """
+    Decomposes a time series into its trend, seasonal, and residual components.
+    
+    Args:
+        targets: A pandas DataFrame representing the time series data.
+        title: A string representing the title of the plot.
+        show: A boolean indicating whether or not to display the plot.
+    """
+
+    result = seasonal_decompose(targets['pv_measurement'], model='additive', period=24)
+    result.plot()
+    #Save
+    plt.savefig(f'{FIGURE_PATH}seasonal_trends/' + title + '.png')
+    if show:
+        plt.show()
+    plt.close()
+    # Seasonal plot for daily patterns
+    daily_seasonal = result.seasonal['2022-01-01':'2022-01-02']  # Adjust dates to pick a representative 2-day period
+    daily_seasonal.plot(figsize=(15,6))
+    plt.title('Daily Seasonal Pattern')
+    plt.savefig(f'{FIGURE_PATH}seasonal_trends/' + title + 'from_2022-01-01_to_2022-01-02.png')
+    if show:
+        plt.show()
+    plt.close()
+
+    # Autocorrelation plot to identify seasonality
+    plot_acf(targets['pv_measurement'], lags=168)  # 168 hours for a weekly pattern
+    plt.title('Autocorrelation Plot')
+    plt.savefig(f'{FIGURE_PATH}seasonal_trends/' + title + 'autocorrelation.png')
+    if show:
+        plt.show()
+    plt.close()
