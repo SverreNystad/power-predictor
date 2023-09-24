@@ -26,12 +26,12 @@ def analyze_normality(target_series):
     # Return test statistic and p-value
     return shapiro_stat, shapiro_p
 
-def anderson_darling_test(target_series):
+def anderson_darling_test(target_series: pd.Series):
     """
     Analyzes the normality of a time series using the Anderson-Darling test.
     
-    Parameters:
-    - target_series: A pandas Series representing the time series data.
+    Args:
+        target_series (pandas.Series): A pandas Series representing the time series data.
     
     Returns:
     - Result of the Anderson-Darling test and insights on the distribution.
@@ -51,8 +51,16 @@ def anderson_darling_test(target_series):
     return anderson_stat, anderson_crit_vals
 
 def lilliefors_test(target_series):
+    """
+    Analyzes the normality of a time series using the Lilliefors test.
+    It is better for large samples.
 
-    # Assume 'data' is the variable containing your sample data
+    Args:
+        target_series (pandas.Series): A pandas Series representing the time series data.
+    Returns: 
+        Result of the Lilliefors test and insights on the distribution.
+    """
+    
     result = sm.stats.diagnostic.lilliefors(target_series, dist='norm')
 
     statistic, p_value = result
