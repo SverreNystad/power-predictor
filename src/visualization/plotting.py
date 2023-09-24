@@ -82,15 +82,24 @@ def plot_boxplots(df: pd.DataFrame, title: str, show: bool = False) -> None:
     Args:
         df (pd.DataFrame): The DataFrame containing the features.
     """
-    num_features = df.shape[1]  # Number of features
+    # Filter out non-numeric columns
+    df_numeric = df.select_dtypes(include=['number'])
+    
+    # Number of numeric features
+    num_features = df_numeric.shape[1]  
+    
+    if num_features == 0:
+        print("No numeric columns to plot")
+        return
+    
     fig, axes = plt.subplots(num_features, 1, figsize=(10, 4 * num_features))
     
-    # Check if df has only one feature, if so, axes is not an array and needs to be put into one
+    # Check if df has only one numeric feature, if so, axes is not an array and needs to be put into one
     if num_features == 1:
         axes = [axes]
     
-    for i, col in enumerate(df.columns):
-        axes[i].boxplot(df[col].dropna(), vert=True)
+    for i, col in enumerate(df_numeric.columns):
+        axes[i].boxplot(df_numeric[col].dropna(), vert=True)
         axes[i].set_title(f'Box plot of {col}')
         axes[i].set_ylabel('Values')
         
