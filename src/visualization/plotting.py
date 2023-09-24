@@ -135,6 +135,7 @@ def plot_moving_average(series, window, plot_intervals=False, scale=1.96, title=
     plt.legend(loc='best')
     plt.grid(True)
     plt.plot(rolling_mean, 'g', label='Rolling Mean Trend')
+    plt.savefig(f'{FIGURE_PATH}moving_average/' + title + '.png')
 
     plt.show()
 
