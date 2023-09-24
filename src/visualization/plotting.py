@@ -121,7 +121,7 @@ def plot_moving_average(series, window, plot_intervals=False, scale=1.96, title=
     
     plt.figure(figsize=(15,5))
     plt.title(title)
-    plt.plot(rolling_mean, 'g', label='Rolling Mean Trend')
+    
     
     # Plot confidence intervals for the moving average
     if plot_intervals:
@@ -134,6 +134,8 @@ def plot_moving_average(series, window, plot_intervals=False, scale=1.96, title=
     plt.plot(series, label='Actual values')
     plt.legend(loc='best')
     plt.grid(True)
+    plt.plot(rolling_mean, 'g', label='Rolling Mean Trend')
+
     plt.show()
 
 def detect_outliers(target_series, title: str):
