@@ -4,6 +4,9 @@ import pandas as pd
 import seaborn as sns
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.graphics.tsaplots import plot_acf
+import numpy as np
+import pywt
+
 
 FIGURE_PATH = "results/figures/"
 
@@ -201,3 +204,49 @@ def seasonal_trends(targets: pd.DataFrame, title: str, show: bool = False):
     if show:
         plt.show()
     plt.close()
+
+
+def spectral_analysis(signal: pd.Series, title: str, show: bool = False) -> None:
+    """
+    Spectral analysis of a time series using Fourier Transform.
+
+    Args:
+        signal: A pandas Series representing the time series data.
+        title: A string representing the title of the plot.
+        show: A boolean indicating whether or not to display the plot.
+    """
+
+    # Apply Fourier Transform using numpy
+    spectral_density = np.abs(np.fft.fft(signal))
+
+    # Frequency values for the x-axis
+    frequencies = np.fft.fftfreq(len(spectral_density))
+
+    # Plot Spectral Density
+    plt.figure(figsize=(10,6))
+    plt.plot(frequencies, spectral_density)
+    plt.title('Spectral Density')
+    plt.xlabel('Frequency')
+    plt.ylabel('Amplitude')
+    plt.savefig(f'{FIGURE_PATH}spectral_analysis/spectral_density_{title}.png')    
+    if show:
+        plt.show()
+    plt.show()
+
+def wavelet_analysis(signal: pd.Series, title: str, wavelet: str = "cmor", show: bool = False) -> None:
+
+    # Define the wavelet
+
+    # Perform Continuous Wavelet Transform
+    coefficients, frequencies = pywt.cwt(signal, scales=np.arange(1, 128), wavelet=wavelet)
+
+    # Plot Wavelet Transform result
+    plt.figure(figsize=(10, 6))
+    plt.imshow(np.abs(coefficients), aspect='auto', extent=[0, len(signal), 1, 128], cmap='jet', interpolation='bilinear')
+    plt.colorbar(label='Magnitude')
+    plt.title('Wavelet Transform')
+    plt.ylabel('Scale')
+    plt.xlabel('Time')
+    plt.savefig(f'{FIGURE_PATH}wavelet_analysis/wavelet_{wavelet}_transform_{title}.png')
+    if show:
+        plt.show()
