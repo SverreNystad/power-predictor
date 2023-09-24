@@ -234,9 +234,13 @@ def spectral_analysis(signal: pd.Series, title: str, show: bool = False) -> None
     plt.show()
 
 def wavelet_analysis(signal: pd.Series, title: str, wavelet: str = "cmor", show: bool = False) -> None:
+    """
+    Wavelet analysis of a time series using Continuous Wavelet Transform.
+    Continuous Wavelet Transform is a mathematical tool used to analyze non-stationary signals.
+        * Morlet Wavelet ('cmor'): Often used for analyzing oscillatory patterns and is suitable for most applications due to its good frequency localization.
+        * Mexican Hat Wavelet ('mexh'): Suitable for detecting sharp changes in signals.
 
-    # Define the wavelet
-
+    """
     # Perform Continuous Wavelet Transform
     coefficients, frequencies = pywt.cwt(signal, scales=np.arange(1, 128), wavelet=wavelet)
 
