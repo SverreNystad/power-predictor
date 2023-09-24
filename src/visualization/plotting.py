@@ -74,20 +74,30 @@ def scatter_plot(feature_name: str, show: bool = False) -> None:
     
     plt.close()
 
-def box_plot(feature_name: str, show: bool = False) -> None:
-    # One way we can extend this plot is adding a layer of individual points on top of
-    # it through Seaborn's striplot
-    # 
-    # We'll use jitter=True so that all the points don't fall in single vertical lines
-    # above the species
-    #
-    # Saving the resulting axes as ax each time causes the resulting plot to be shown
-    # on top of the previous axes
-    # ax = sns.boxplot(x="Species", y="PetalLengthCm", data=iris)
-    # ax = sns.stripplot(x="Species", y="PetalLengthCm", data=iris, jitter=True, edgecolor="gray")
-    # ax.
 
-    pass
+def plot_boxplots(df: pd.DataFrame, title: str, show: bool = False) -> None:
+    """
+    Plot box plots for each feature in the DataFrame.
+    
+    Args:
+        df (pd.DataFrame): The DataFrame containing the features.
+    """
+    num_features = df.shape[1]  # Number of features
+    fig, axes = plt.subplots(num_features, 1, figsize=(10, 4 * num_features))
+    
+    # Check if df has only one feature, if so, axes is not an array and needs to be put into one
+    if num_features == 1:
+        axes = [axes]
+    
+    for i, col in enumerate(df.columns):
+        axes[i].boxplot(df[col].dropna(), vert=True)
+        axes[i].set_title(f'Box plot of {col}')
+        axes[i].set_ylabel('Values')
+        
+    plt.tight_layout()
+    plt.savefig(f'{FIGURE_PATH}boxplots/{title}_boxplots.png')
+    if show:
+        plt.show()
 
 def pair_grid_plot(feature_name: str, show: bool = False) -> None:
     # We can quickly make a boxplot with Pandas on each feature split out by species
