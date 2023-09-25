@@ -4,6 +4,7 @@ from typing import Tuple
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+
 def create_time_features_from_date(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
     Create a new data frame with new features from date_forecast column.
@@ -88,7 +89,7 @@ def clean_data(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
     df = data_frame.copy()
     df = create_time_features_from_date(df)
-    df = df.dropna()
+    # df = df.dropna()
     df = df[df["target"] > 0]
     return df
 
@@ -100,56 +101,40 @@ def remove_features(data_frame: pd.DataFrame) -> pd.DataFrame:
     )
     df = df.drop("ceiling_height_agl:m", axis=1)
     df["no_clouds"] = df["cloud_base_agl:m"].isna().astype(int)
+    df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
     return df
 
 
-# Define a function to align the temporal resolution of the datasets
-def temporal_alignment(train: pd.DataFrame, observed: pd.DataFrame, estimated: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """
-    Aligns the temporal resolution of the datasets by aggregating the 15-min interval weather data to hourly intervals.
-    
-    Args:
-        train (pd.DataFrame): The training targets DataFrame.
-        observed (pd.DataFrame): The observed training features DataFrame.
-        estimated (pd.DataFrame): The estimated training features DataFrame.
-    
-    Returns:
-        train_observed (pd.DataFrame): The aligned training DataFrame with observed features.
-        train_estimated (pd.DataFrame): The aligned training DataFrame with estimated features.
-    """
-    # Convert the time columns to datetime objects
-    train['time'] = pd.to_datetime(train['time'])
-    observed['date_forecast'] = pd.to_datetime(observed['date_forecast'])
-    estimated['date_forecast'] = pd.to_datetime(estimated['date_forecast'])
-    
-    # Set the date_forecast column as index for resampling
-    observed.set_index('date_forecast', inplace=True)
-    estimated.set_index('date_forecast', inplace=True)
-    
-    # Resample the weather data to hourly intervals and aggregate the values by mean
-    observed_resampled = observed.resample('1H').mean()
-    estimated_resampled = estimated.resample('1H').mean()
-    
-    # Reset the index after resampling
-    observed_resampled.reset_index(inplace=True)
-    estimated_resampled.reset_index(inplace=True)
-    
-    # Merge the aggregated weather data with the solar production data based on the timestamp
-    train_observed = pd.merge(train, observed_resampled, how='left', left_on='time', right_on='date_forecast')
-    train_estimated = pd.merge(train, estimated_resampled, how='left', left_on='time', right_on='date_forecast')
-    
-    return train_observed, train_estimated
+def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
+    df = remove_features(data_frame)
+    df = create_time_features_from_date(df)
+    return df
 
-def prepare_data(train_observed: pd.DataFrame, train_estimated: pd.DataFrame, test_size=0.2, random_state=42) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+
+def prepare_data(
+    train_observed: pd.DataFrame,
+    train_estimated: pd.DataFrame,
+    test_size=0.2,
+    random_state=42,
+) -> Tuple[
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.Series,
+    pd.Series,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.Series,
+    pd.Series,
+]:
     """
     Prepares the data for modeling by handling missing values and splitting the data.
-    
+
     Args:
     train_observed (pd.DataFrame): The aligned training DataFrame with observed features.
     train_estimated (pd.DataFrame): The aligned training DataFrame with estimated features.
     test_size (float): The proportion of the dataset to include in the test split.
     random_state (int): Controls the shuffling applied to the data before applying the split.
-    
+
     Returns:
     X_train_obs (pd.DataFrame): The training features with observed data.
     X_val_obs (pd.DataFrame): The validation features with observed data.
@@ -160,21 +145,87 @@ def prepare_data(train_observed: pd.DataFrame, train_estimated: pd.DataFrame, te
     y_train_est (pd.Series): The training target with estimated data.
     y_val_est (pd.Series): The validation target with estimated data.
     """
-    
+
+    # Feature engineer
+    train_observed_clean = feature_engineer(train_observed_clean)
+    train_estimated_clean = feature_engineer(train_estimated_clean)
 
     # Handle missing values (e.g., imputation, removal)
-    train_observed_clean  = train_observed.dropna()
+    train_observed_clean = train_observed.dropna()
     train_estimated_clean = train_estimated.dropna()
-    
+
+    # Feature engineering
+
     # Split the data into features (X) and target (y)
-    X_obs = train_observed_clean.drop(columns=['time', 'pv_measurement', 'date_forecast'])
-    y_obs = train_observed_clean['pv_measurement']
-    
-    X_est = train_estimated_clean.drop(columns=['time', 'pv_measurement', 'date_forecast'])
-    y_est = train_estimated_clean['pv_measurement']
-    
+    X_obs = train_observed_clean.drop(
+        columns=["time", "pv_measurement", "date_forecast"]
+    )
+    y_obs = train_observed_clean["pv_measurement"]
+
+    X_est = train_estimated_clean.drop(
+        columns=["time", "pv_measurement", "date_forecast"]
+    )
+    y_est = train_estimated_clean["pv_measurement"]
+
     # Split the data into training and validation sets
-    X_train_obs, X_val_obs, y_train_obs, y_val_obs = train_test_split(X_obs, y_obs, test_size=test_size, random_state=random_state)
-    X_train_est, X_val_est, y_train_est, y_val_est = train_test_split(X_est, y_est, test_size=test_size, random_state=random_state)
-    
-    return X_train_obs, X_val_obs, y_train_obs, y_val_obs, X_train_est, X_val_est, y_train_est, y_val_est
+    X_train_obs, X_val_obs, y_train_obs, y_val_obs = train_test_split(
+        X_obs, y_obs, test_size=test_size, random_state=random_state
+    )
+    X_train_est, X_val_est, y_train_est, y_val_est = train_test_split(
+        X_est, y_est, test_size=test_size, random_state=random_state
+    )
+
+    return (
+        X_train_obs,
+        X_val_obs,
+        y_train_obs,
+        y_val_obs,
+        X_train_est,
+        X_val_est,
+        y_train_est,
+        y_val_est,
+    )
+
+
+# Define a function to align the temporal resolution of the datasets
+def temporal_alignment(
+    train: pd.DataFrame, observed: pd.DataFrame, estimated: pd.DataFrame
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Aligns the temporal resolution of the datasets by aggregating the 15-min interval weather data to hourly intervals.
+
+    Args:
+        train (pd.DataFrame): The training targets DataFrame.
+        observed (pd.DataFrame): The observed training features DataFrame.
+        estimated (pd.DataFrame): The estimated training features DataFrame.
+
+    Returns:
+        train_observed (pd.DataFrame): The aligned training DataFrame with observed features.
+        train_estimated (pd.DataFrame): The aligned training DataFrame with estimated features.
+    """
+    # Convert the time columns to datetime objects
+    train["time"] = pd.to_datetime(train["time"])
+    observed["date_forecast"] = pd.to_datetime(observed["date_forecast"])
+    estimated["date_forecast"] = pd.to_datetime(estimated["date_forecast"])
+
+    # Set the date_forecast column as index for resampling
+    observed.set_index("date_forecast", inplace=True)
+    estimated.set_index("date_forecast", inplace=True)
+
+    # Resample the weather data to hourly intervals and aggregate the values by mean
+    observed_resampled = observed.resample("1H").mean()
+    estimated_resampled = estimated.resample("1H").mean()
+
+    # Reset the index after resampling
+    observed_resampled.reset_index(inplace=True)
+    estimated_resampled.reset_index(inplace=True)
+
+    # Merge the aggregated weather data with the solar production data based on the timestamp
+    train_observed = pd.merge(
+        train, observed_resampled, how="left", left_on="time", right_on="date_forecast"
+    )
+    train_estimated = pd.merge(
+        train, estimated_resampled, how="left", left_on="time", right_on="date_forecast"
+    )
+
+    return train_observed, train_estimated
