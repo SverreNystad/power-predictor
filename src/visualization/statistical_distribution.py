@@ -74,3 +74,18 @@ def lilliefors_test(target_series):
         print("Data looks normal (Fail to reject H0)")
 
         return statistic, p_value
+    
+
+def feature_correlation(df: pd.DataFrame, threshold: float = 0.8):
+    correlation_matrix = df.corr()
+
+    # Find pairs of features with correlation above threshold
+    correlated_features = set()
+    for i in range(len(correlation_matrix.columns)):
+        for j in range(i):
+            if abs(correlation_matrix.iloc[i, j]) > threshold:
+                colname = correlation_matrix.columns[i]
+                correlated_features.add(colname)
+
+    
+    return(correlated_features)
