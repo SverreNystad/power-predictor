@@ -267,7 +267,7 @@ def wavelet_analysis(signal: pd.Series, title: str, wavelet: str = "cmor", show:
     plt.figure(figsize=(10, 6))
     plt.imshow(np.abs(coefficients), aspect='auto', extent=[0, len(signal), 1, 128], cmap='jet', interpolation='bilinear')
     plt.colorbar(label='Magnitude')
-    plt.title('Wavelet Transform')
+    plt.title(title)
     plt.ylabel('Scale')
     plt.xlabel('Time')
     plt.savefig(f'{FIGURE_PATH}wavelet_analysis/wavelet_{wavelet}_transform_{title}.png')
