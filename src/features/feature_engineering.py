@@ -1,6 +1,7 @@
 from datetime import datetime
 import pandas as pd
 from typing import Tuple
+import numpy as np
 
 
 def create_time_features_from_date(data_frame: pd.DataFrame) -> pd.DataFrame:
@@ -94,6 +95,11 @@ def clean_data(data_frame: pd.DataFrame) -> pd.DataFrame:
 
 def remove_features(data_frame: pd.DataFrame) -> pd.DataFrame:
     df = data_frame.drop("snow_density:kgm3", axis=1)
+    df["cloud_coverage_over_50%"] = np.where(
+        (df["ceiling_height_agl:m"] >= 0) & (df["ceiling_height_agl:m"] <= 6000), 1, 0
+    )
+    df = df.drop("ceiling_height_agl:m", axis=1)
+    df["no_clouds"] = df["cloud_base_agl:m"].isna().astype(int)
     return df
 
 
