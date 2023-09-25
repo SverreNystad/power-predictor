@@ -273,3 +273,20 @@ def wavelet_analysis(signal: pd.Series, title: str, wavelet: str = "cmor", show:
     plt.savefig(f'{FIGURE_PATH}wavelet_analysis/wavelet_{wavelet}_transform_{title}.png')
     if show:
         plt.show()
+
+def plot_correlation_matrix(df: pd.DataFrame, title: str, show: bool = False) -> None:
+    """
+    Plots a heatmap of the correlation between the features in the DataFrame.
+    
+    Args:
+        df (pd.DataFrame): The DataFrame containing the features.
+        title (str): The title of the plot.
+        show (bool): A boolean indicating whether or not to display the plot.
+    """
+    correlation_matrix = df.corr()
+    # Compute the correlation matrix
+    plt.figure(figsize=(12, 10))
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+    plt.savefig(f'{FIGURE_PATH}feature_correlation/{title}_correlation.png')
+    if show:
+        plt.show()
