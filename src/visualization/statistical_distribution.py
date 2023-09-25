@@ -77,6 +77,13 @@ def lilliefors_test(target_series):
     
 
 def feature_correlation(df: pd.DataFrame, threshold: float = 0.8):
+    """
+    Finds pairs of features with correlation above a given threshold.
+
+    Args:
+        df (pandas.DataFrame): A pandas DataFrame representing the data.
+        threshold (float, optional): The threshold for the correlation. Defaults to 0.8.
+    """
     correlation_matrix = df.corr()
 
     # Find pairs of features with correlation above threshold
