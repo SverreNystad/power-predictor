@@ -147,14 +147,12 @@ def prepare_data(
     """
 
     # Feature engineer
-    train_observed_clean = feature_engineer(train_observed_clean)
-    train_estimated_clean = feature_engineer(train_estimated_clean)
+    train_observed_clean = feature_engineer(train_observed)
+    train_estimated_clean = feature_engineer(train_estimated)
 
     # Handle missing values (e.g., imputation, removal)
     train_observed_clean = train_observed.dropna()
     train_estimated_clean = train_estimated.dropna()
-
-    # Feature engineering
 
     # Split the data into features (X) and target (y)
     X_obs = train_observed_clean.drop(
