@@ -49,6 +49,13 @@ def get_all_features() -> list:
     all_featues = [feature for feature in all_features if feature != 'date_forecast']
     return all_featues
 
+def get_tests() -> pd.DataFrame:
+    """
+    Utility function to load the raw data from the data/raw folder.q
+    """
+    test = pd.read_csv(f'{PATH_RAW_DATA_LOCATION}test.csv')
+    return test
+
 if __name__ == "__main__":
     data = get_raw_data()
     print(data[0].head())
