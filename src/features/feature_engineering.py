@@ -257,13 +257,13 @@ def prepare_data(
     y_val_est (pd.Series): The validation target with estimated data.
     """
 
-    # Feature engineer
-    train_observed_clean = feature_engineer(train_observed)
-    train_estimated_clean = feature_engineer(train_estimated)
+    # # Feature engineer
+    # train_observed_clean = feature_engineer(train_observed)
+    # train_estimated_clean = feature_engineer(train_estimated)
 
     # Handle missing values (e.g., imputation, removal)
-    train_observed_clean = train_observed_clean.dropna()
-    train_estimated_clean = train_estimated_clean.dropna()
+    train_observed_clean = train_observed.dropna()
+    train_estimated_clean = train_estimated.dropna()
 
     # Split the data into features (X) and target (y)
     X_obs = train_observed_clean.drop(
