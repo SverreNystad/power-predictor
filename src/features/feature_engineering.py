@@ -222,11 +222,8 @@ def clean_data(data_frame: pd.DataFrame) -> pd.DataFrame:
 
 def remove_features(data_frame: pd.DataFrame) -> pd.DataFrame:
     df = data_frame.drop("snow_density:kgm3", axis=1)
-    df["cloud_coverage_over_50%"] = np.where(
-        (df["ceiling_height_agl:m"] >= 0) & (df["ceiling_height_agl:m"] <= 6000), 1, 0
-    )
     df = df.drop("ceiling_height_agl:m", axis=1)
-    df["no_clouds"] = df["cloud_base_agl:m"].isna().astype(int)
+    # df["no_clouds"] = df["cloud_base_agl:m"].isna().astype(int)
     df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
     return df
 
