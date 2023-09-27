@@ -9,30 +9,36 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, PolynomialFeatur
 import math
 
 
-def create_polynomial_features(df, columns, degree=2, include_bias=False, interaction_only=False):
+def create_polynomial_features(
+    df, columns, degree=2, include_bias=False, interaction_only=False
+):
     """
     Create polynomial features for specified columns in a DataFrame.
-    
+
     Parameters:
     - df (pd.DataFrame): The input DataFrame.
     - columns (list): List of column names for which to create polynomial features.
     - degree (int): The degree of the polynomial features. Default is 2.
     - include_bias (bool): Whether to include a bias column in the output. Default is False.
     - interaction_only (bool): Whether to include only interaction features. Default is False.
-    
+
     Returns:
     - df_poly (pd.DataFrame): DataFrame with original and new polynomial features.
     """
-    poly = PolynomialFeatures(degree=degree, include_bias=include_bias, interaction_only=interaction_only)
+    poly = PolynomialFeatures(
+        degree=degree, include_bias=include_bias, interaction_only=interaction_only
+    )
     poly_features = poly.fit_transform(df[columns])
     feature_names = poly.get_feature_names(input_features=columns)
-    
+
     df_poly = pd.DataFrame(poly_features, columns=feature_names, index=df.index)
-    df_poly = df_poly.drop(columns=columns)  # Drop original columns as they are included in the polynomial features
-    
+    df_poly = df_poly.drop(
+        columns=columns
+    )  # Drop original columns as they are included in the polynomial features
+
     # Concatenate the original DataFrame with the new polynomial features DataFrame
     df_poly = pd.concat([df.drop(columns=columns), df_poly], axis=1)
-    
+
     return df_poly
 
 
@@ -42,16 +48,18 @@ def log_transform(df: pd.DataFrame, columns: List[str]):
         df_transformed[column] = np.log1p(df_transformed[column])
     return df_transformed
 
-def scale_features(df: pd.DataFrame, columns: List[str], method='standard'):
+
+def scale_features(df: pd.DataFrame, columns: List[str], method="standard"):
     df_scaled = df.copy()
-    scaler = StandardScaler() if method == 'standard' else MinMaxScaler()
+    scaler = StandardScaler() if method == "standard" else MinMaxScaler()
     df_scaled[columns] = scaler.fit_transform(df_scaled[columns])
     return df_scaled
 
+
 def trig_transform(df: pd.DataFrame, column: str, period: int):
     df_trig = df.copy()
-    df_trig[f'{column}_sin'] = np.sin(2 * math.pi * df_trig[column] / period)
-    df_trig[f'{column}_cos'] = np.cos(2 * math.pi * df_trig[column] / period)
+    df_trig[f"{column}_sin"] = np.sin(2 * math.pi * df_trig[column] / period)
+    df_trig[f"{column}_cos"] = np.cos(2 * math.pi * df_trig[column] / period)
     return df_trig
 
 
@@ -68,52 +76,60 @@ def create_lagged_features(df, column, n_lags):
         n_lags is the number of lagged features you want to create
     """
     for lag in range(1, n_lags + 1):
-        df[f'{column}_lag{lag}'] = df[column].shift(lag)
+        df[f"{column}_lag{lag}"] = df[column].shift(lag)
     return df
 
+
 def calculate_rolling_statistics(df, column, window_size):
-    df[f'{column}_rolling_mean_{window_size}'] = df[column].rolling(window=window_size).mean()
-    df[f'{column}_rolling_std_{window_size}'] = df[column].rolling(window=window_size).std()
+    df[f"{column}_rolling_mean_{window_size}"] = (
+        df[column].rolling(window=window_size).mean()
+    )
+    df[f"{column}_rolling_std_{window_size}"] = (
+        df[column].rolling(window=window_size).std()
+    )
     return df
 
 
 # Define a function to identify positively skewed numerical features in a DataFrame
 def identify_skewed_features(df, skew_threshold=1):
     # Select numerical features
-    num_features = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
-    
+    num_features = df.select_dtypes(include=["float64", "int64"]).columns.tolist()
+
     # Calculate skewness for each numerical feature and filter those that are positively skewed
-    skewed_features = [feature for feature in num_features if skew(df[feature]) > skew_threshold]
-    
+    skewed_features = [
+        feature for feature in num_features if skew(df[feature]) > skew_threshold
+    ]
+
     return skewed_features
 
 
 def create_domain_specific_features(df):
     """
     Create domain-specific features for solar energy production.
-    
+
     Parameters:
     - df (pd.DataFrame): The input DataFrame.
-    
+
     Returns:
     - df_domain (pd.DataFrame): DataFrame with original and new domain-specific features.
     """
     df_domain = df.copy()
-    
-    # Create a binary feature representing whether the sky is clear
-    df_domain['is_clear_sky'] = (df_domain['clear_sky_energy_1h:J'] > 0).astype(int)
-    
-    # Create a feature representing total sun exposure
-    df_domain['total_sun_exposure'] = df_domain['direct_rad:W'] + df_domain['diffuse_rad:W']
-    
-    # Create a binary feature representing whether it is raining
-    df_domain['is_raining'] = (df_domain['precip_5min:mm'] > 0).astype(int)
-    
-    # Create a binary feature representing whether there is snow cover
-    df_domain['is_snow_cover'] = (df_domain['snow_depth:cm'] > 0).astype(int)
-    
-    return df_domain
 
+    # Create a binary feature representing whether the sky is clear
+    df_domain["is_clear_sky"] = (df_domain["clear_sky_energy_1h:J"] > 0).astype(int)
+
+    # Create a feature representing total sun exposure
+    df_domain["total_sun_exposure"] = (
+        df_domain["direct_rad:W"] + df_domain["diffuse_rad:W"]
+    )
+
+    # Create a binary feature representing whether it is raining
+    df_domain["is_raining"] = (df_domain["precip_5min:mm"] > 0).astype(int)
+
+    # Create a binary feature representing whether there is snow cover
+    df_domain["is_snow_cover"] = (df_domain["snow_depth:cm"] > 0).astype(int)
+
+    return df_domain
 
 
 def create_time_features_from_date(data_frame: pd.DataFrame) -> pd.DataFrame:
@@ -217,9 +233,13 @@ def remove_features(data_frame: pd.DataFrame) -> pd.DataFrame:
 
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
-    df = remove_features(data_frame)
-    df = create_time_features_from_date(df)
-    return df
+    data_frame = remove_features(data_frame)
+    print("hei")
+    print(data_frame.head())
+    nat_rows = data_frame[data_frame["date_forecast"].isna()]
+    print(nat_rows)
+    data_frame = create_time_features_from_date(data_frame)
+    return data_frame
 
 
 def prepare_data(
@@ -257,13 +277,13 @@ def prepare_data(
     y_val_est (pd.Series): The validation target with estimated data.
     """
 
-    # # Feature engineer
-    # train_observed_clean = feature_engineer(train_observed)
-    # train_estimated_clean = feature_engineer(train_estimated)
-
     # Handle missing values (e.g., imputation, removal)
     train_observed_clean = train_observed.dropna()
     train_estimated_clean = train_estimated.dropna()
+
+    # # Feature engineer
+    train_observed_clean = feature_engineer(train_observed_clean)
+    train_estimated_clean = feature_engineer(train_estimated_clean)
 
     # Split the data into features (X) and target (y)
     X_obs = train_observed_clean.drop(
