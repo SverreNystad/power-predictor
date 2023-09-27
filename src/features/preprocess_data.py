@@ -257,6 +257,9 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
     X_test_estimated_a_processed.dropna()
     X_test_estimated_b_processed.dropna()
     X_test_estimated_c_processed.dropna()
+
+    print("hei")
+    print(X_test_estimated_a_processed.head())
     return (
         X_test_estimated_a_processed,
         X_test_estimated_b_processed,
