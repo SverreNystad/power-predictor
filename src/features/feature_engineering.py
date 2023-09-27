@@ -132,7 +132,7 @@ def create_domain_specific_features(df):
     return df_domain
 
 
-def create_time_features_from_date(data_frame: pd.DataFrame) -> pd.DataFrame:
+def create_time_features_from_date(df: pd.DataFrame) -> pd.DataFrame:
     """
     Create a new data frame with new features from date_forecast column.
     This will create temporal features from date_forecast that are easier to learn by the model.
@@ -145,7 +145,6 @@ def create_time_features_from_date(data_frame: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame: Data frame copy with new features.
 
     """
-    df = data_frame.copy()
     df["month"] = df["date_forecast"].apply(get_month)
     df["season"] = df["month"].apply(get_season)
     df["year"] = df["date_forecast"].apply(get_year)
@@ -232,13 +231,28 @@ def remove_features(data_frame: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def add_location(data_frame: pd.DataFrame, location: str):
+    if location.lower() == "a":
+        data_frame["location_a"] = 1
+    else:
+        data_frame["location_a"] = 0
+
+    if location.lower() == "b":
+        data_frame["location_b"] = 1
+    else:
+        data_frame["location_b"] = 0
+
+    if location.lower() == "c":
+        data_frame["location_c"] = 1
+    else:
+        data_frame["location_c"] = 0
+    return data_frame
+
+
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = remove_features(data_frame)
-    print("hei")
-    print(data_frame.head())
-    nat_rows = data_frame[data_frame["date_forecast"].isna()]
-    print(nat_rows)
     data_frame = create_time_features_from_date(data_frame)
+    print(data_frame.head())
     return data_frame
 
 
