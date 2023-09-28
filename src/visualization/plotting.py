@@ -16,6 +16,20 @@ train_a, train_b, train_c, X_train_estimated_a, X_train_estimated_b, X_train_est
 def parse_feature_name(feature_name: str) -> str:
     return feature_name.replace(':', '_')
 
+def plot_pv_measurement(show: bool = False) -> None:
+    fig, axs = plt.subplots(3, 1, figsize=(20, 10), sharex=True)
+    train_a.set_index('time').plot(ax=axs[0], title='location A', color='red')
+    train_b.set_index('time').plot(ax=axs[1], title='location B', color='red')
+    train_c.set_index('time').plot(ax=axs[2], title='location C', color='red')
+
+
+    plt.ylabel('PV Measurement')
+    plt.xlabel('Date')
+    plt.savefig(f'{FIGURE_PATH}time_plot/pv_measurement.png')
+    if show:
+        plt.show()
+    plt.close()
+
 def plot_single_feature(feature_name: str, show: bool = False) -> None:
     """
     Plots a single feature for all three train/test sets.
