@@ -304,3 +304,41 @@ def plot_correlation_matrix(df: pd.DataFrame, title: str, show: bool = False) ->
     plt.savefig(f'{FIGURE_PATH}feature_correlation/{title}_correlation.png')
     if show:
         plt.show()
+
+def plot_acf_daily_weekly_monthly_yearly(date_frame: pd.DataFrame, feature: str, title: str, show: bool = False) -> None:
+    """
+    Plot the Autocorrelation Function (ACF) for a given feature in a DataFrame.
+    The ACF is a measure of the correlation between the time series and a lagged version of itself.
+    This is useful for identifying patterns in the time series data.
+    
+    """
+
+    plt.figure(figsize=(15,6))
+    plot_acf(date_frame[feature], lags=24)  # 24 hours to check for daily patterns
+    plt.title(f'Autocorrelation Function (ACF) Plot for {title} (Daily)')
+    plt.savefig(f"{FIGURE_PATH}acf/{feature}_daily_for_{title}.png")
+    if show:
+        plt.show() 
+
+    # Plot the Autocorrelation Function
+    plt.figure(figsize=(15,6))
+    plot_acf(date_frame[feature], lags=168)  # 168 hours to check for weekly patterns
+    plt.title(f'Autocorrelation Function (ACF) Plot for {title} (Weekly)')
+    plt.savefig(f"{FIGURE_PATH}acf/{feature}_weekly_for_{title}.png")
+    if show:
+        plt.show()
+
+
+    plt.figure(figsize=(15,6))
+    plot_acf(date_frame[feature], lags=168*4)  # 168*4 hours to check for monthly patterns
+    plt.title(f'Autocorrelation Function (ACF) Plot for {title} (Monthly)')
+    plt.savefig(f"{FIGURE_PATH}acf/{feature}_monthly_for_{title}.png")
+    if show:
+        plt.show()
+
+    plt.figure(figsize=(15,6))
+    plot_acf(date_frame[feature], lags=168*4*12)  # 168*4*12 hours to check for yearly patterns
+    plt.title(f'Autocorrelation Function (ACF) Plot for {title} (Yearly)')
+    plt.savefig(f"{FIGURE_PATH}acf/{feature}_yearly_for_{title}.png")
+    if show:
+        plt.show()
