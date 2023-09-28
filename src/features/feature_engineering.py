@@ -145,12 +145,19 @@ def create_time_features_from_date(df: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame: Data frame copy with new features.
 
     """
-    df["month"] = df["date_forecast"].apply(get_month)
-    df["season"] = df["month"].apply(get_season)
-    df["year"] = df["date_forecast"].apply(get_year)
-    df["day_of_year"] = df["date_forecast"].apply(get_day_of_year)
-    df["day_segment"] = df["date_forecast"].apply(get_day_segment)
+    df["sin_day_of_year"] = df["date_forecast"].apply(get_sin_day)
+    df["cos_day_of_year"] = df["date_forecast"].apply(get_cos_day)
+    df["sin_hour"] = df["date_forecast"].apply(get_sin_hour)
+    df["cos_hour"] = df["date_forecast"].apply(get_cos_hour)
     return df
+
+
+def get_sin_hour(date: datetime) -> float:
+    return math.sin(2 * math.pi * (date.hour) / 24)
+
+
+def get_cos_hour(date: datetime) -> float:
+    return math.cos(2 * math.pi * (date.hour) / 24)
 
 
 def get_month(date: datetime) -> int:
@@ -176,6 +183,14 @@ def get_year(date: datetime) -> int:
 
 def get_day_of_year(date: datetime) -> int:
     return date.timetuple().tm_yday
+
+
+def get_sin_day(date: datetime) -> float:
+    return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
+
+
+def get_cos_day(date: datetime) -> float:
+    return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
 
 
 def get_day_segment(date: datetime) -> int:
@@ -225,6 +240,7 @@ def remove_features(data_frame: pd.DataFrame) -> pd.DataFrame:
     df = df.drop("ceiling_height_agl:m", axis=1)
     # df["no_clouds"] = df["cloud_base_agl:m"].isna().astype(int)
     df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
+    df = df.drop("elevation:m", axis=1)
     return df
 
 
@@ -248,8 +264,13 @@ def add_location(data_frame: pd.DataFrame, location: str):
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = remove_features(data_frame)
+    # features_to_scale = data_frame.select_dtypes(
+    #     exclude=["datetime64"]
+    # ).columns.tolist()
+    # if "pv_measurement" in features_to_scale:
+    #     features_to_scale.remove("pv_measurement")
+    # data_frame = scale_features(data_frame, features_to_scale)
     data_frame = create_time_features_from_date(data_frame)
-    print(data_frame.head())
     return data_frame
 
 

@@ -8,7 +8,10 @@ from src.features.feature_engineering import (
     add_location,
 )
 
-def fetch_preprocessed_uniform_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+
+def fetch_preprocessed_uniform_data() -> (
+    Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]
+):
     """
     Fetch the preprocessed data for training and validation.
     Does not make a distinction between observed and estimated data.
@@ -19,7 +22,16 @@ def fetch_preprocessed_uniform_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.Da
         X_val: The validation data
         y_val: The validation labels
     """
-    X_train_obs_combined, X_val_obs_combined, y_train_obs_combined, y_val_obs_combined, X_train_est_combined, X_val_est_combined, y_train_est_combined, y_val_est_combined, = fetch_preprocessed_data()
+    (
+        X_train_obs_combined,
+        X_val_obs_combined,
+        y_train_obs_combined,
+        y_val_obs_combined,
+        X_train_est_combined,
+        X_val_est_combined,
+        y_train_est_combined,
+        y_val_est_combined,
+    ) = fetch_preprocessed_data()
 
     # Merge the observed and estimated data
     X_train = pd.concat([X_train_obs_combined, X_train_est_combined])
@@ -28,6 +40,7 @@ def fetch_preprocessed_uniform_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.Da
     y_val = pd.concat([y_val_obs_combined, y_val_est_combined])
 
     return X_train, y_train, X_val, y_val
+
 
 def fetch_preprocessed_data() -> (
     Tuple[
@@ -278,8 +291,6 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
     X_test_estimated_b_processed.dropna()
     X_test_estimated_c_processed.dropna()
 
-    print("hei")
-    print(X_test_estimated_a_processed.head())
     return (
         X_test_estimated_a_processed,
         X_test_estimated_b_processed,
