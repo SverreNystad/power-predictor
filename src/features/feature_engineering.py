@@ -235,15 +235,6 @@ def clean_data(data_frame: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def remove_features(data_frame: pd.DataFrame) -> pd.DataFrame:
-    df = data_frame.drop("snow_density:kgm3", axis=1)
-    df = df.drop("ceiling_height_agl:m", axis=1)
-    # df["no_clouds"] = df["cloud_base_agl:m"].isna().astype(int)
-    df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
-    df = df.drop("elevation:m", axis=1)
-    return df
-
-
 def add_location(data_frame: pd.DataFrame, location: str):
     if location.lower() == "a":
         data_frame["location_a"] = 1
@@ -263,7 +254,6 @@ def add_location(data_frame: pd.DataFrame, location: str):
 
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
-    data_frame = remove_features(data_frame)
     # features_to_scale = data_frame.select_dtypes(
     #     exclude=["datetime64"]
     # ).columns.tolist()
@@ -309,9 +299,19 @@ def prepare_data(
     y_val_est (pd.Series): The validation target with estimated data.
     """
 
+    print(f"Before dropping {train_observed.shape}")
+
+    # Remove missing features
+
+    train_observed = remove_missing_features(train_observed)
+    train_estimated = remove_missing_features(train_estimated)
+    print(f"Description missing values: {train_observed.isna().sum()}")
+
     # Handle missing values (e.g., imputation, removal)
     train_observed_clean = train_observed.dropna()
     train_estimated_clean = train_estimated.dropna()
+
+    print(f"After dropping {train_observed_clean.shape}")
 
     # # Feature engineer
     train_observed_clean = feature_engineer(train_observed_clean)
@@ -346,6 +346,14 @@ def prepare_data(
         y_train_est,
         y_val_est,
     )
+
+
+def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.drop("snow_density:kgm3", axis=1)
+    df = df.drop("ceiling_height_agl:m", axis=1)
+    df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
+    df = df.drop("elevation:m", axis=1)
+    return df
 
 
 # Define a function to align the temporal resolution of the datasets
