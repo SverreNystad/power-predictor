@@ -324,7 +324,7 @@ def prepare_data(
     y_obs = train_observed_clean["pv_measurement"]
 
     X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast", "date_calc"]
+        columns=["time", "pv_measurement", "date_forecast"]
     )
     y_est = train_estimated_clean["pv_measurement"]
 
