@@ -44,21 +44,15 @@ def prepare_data(
     y_val_est (pd.Series): The validation target with estimated data.
     """
 
-    print(f"Before dropping {train_observed.shape}")
-
     # Remove missing features
-
     train_observed = remove_missing_features(train_observed)
     train_estimated = remove_missing_features(train_estimated)
-    print(f"Description missing values: {train_observed.isna().sum()}")
 
     # Handle missing values (e.g., imputation, removal)
     train_observed_clean = train_observed.dropna()
     train_estimated_clean = train_estimated.dropna()
 
-    print(f"After dropping {train_observed_clean.shape}")
-
-    # # Feature engineer
+    # Feature engineer
     train_observed_clean = feature_engineer(train_observed_clean)
     train_estimated_clean = feature_engineer(train_estimated_clean)
 
@@ -135,7 +129,6 @@ def get_cos_hour(date: datetime) -> float:
 
 def get_sin_day(date: datetime) -> float:
     return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
-
 
 def get_cos_day(date: datetime) -> float:
     return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
@@ -262,22 +255,6 @@ def create_domain_specific_features(df):
 
     return df_domain
 
-
-def remove_date_time_feature(data_frame: pd.DataFrame) -> pd.DataFrame:
-    """
-    Remove date_forecast column from data frame.
-
-    Args:
-        df (pd.DataFrame): Data frame with date_forecast column.
-    Returns:
-        pd.DataFrame: Data frame copy without date_forecast column.
-
-    """
-    df = data_frame.copy()
-    df.drop(["date_forecast"], axis=1, inplace=True)
-    return df
-
-
 def clean_data(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
     Clean data frame by removing outliers and NaN values.
@@ -290,7 +267,6 @@ def clean_data(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
     df = data_frame.copy()
     df = create_time_features_from_date(df)
-    # df = df.dropna()
     df = df[df["target"] > 0]
     return df
 
