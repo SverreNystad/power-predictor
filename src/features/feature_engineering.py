@@ -63,7 +63,7 @@ def prepare_data(
     y_obs = train_observed_clean["pv_measurement"]
 
     X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast"]
+        columns=["time", "pv_measurement", "date_forecast", "date_calc"]
     )
     y_est = train_estimated_clean["pv_measurement"]
 
@@ -92,6 +92,12 @@ def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop("ceiling_height_agl:m", axis=1)
     df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
     df = df.drop("elevation:m", axis=1)
+    df = df.drop("fresh_snow_12h:cm", axis=1)
+    df = df.drop("fresh_snow_1h:cm", axis=1)
+    df = df.drop("fresh_snow_24h:cm", axis=1)
+    df = df.drop("fresh_snow_3h:cm", axis=1)
+    df = df.drop("fresh_snow_6h:cm", axis=1)
+
     return df
 
 
