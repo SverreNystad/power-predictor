@@ -151,10 +151,6 @@ def get_season(month: int) -> int:
     return ((month) // 3) + 1
 
 
-def get_year(date: datetime) -> int:
-    return date.year
-
-
 def get_day_of_year(date: datetime) -> int:
     return date.timetuple().tm_yday
 
