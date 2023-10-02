@@ -103,6 +103,10 @@ def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop("fresh_snow_24h:cm", axis=1)
     df = df.drop("fresh_snow_3h:cm", axis=1)
     df = df.drop("fresh_snow_6h:cm", axis=1)
+    df = df.drop("wind_speed_u_10m:ms", axis=1)
+    # df = df.drop("wind_speed_10m:ms", axis=1)
+    # df = df.drop("wind_speed_v_10m:ms", axis=1)
+    df = df.drop("wind_speed_w_1000hPa:ms", axis=1)
 
     return df
 
@@ -139,12 +143,14 @@ def get_sin_hour(date: datetime) -> float:
 def get_cos_hour(date: datetime) -> float:
     return math.cos(2 * math.pi * (date.hour) / 24)
 
+
 def get_sin_day(date: datetime) -> float:
     return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
 
 
 def get_cos_day(date: datetime) -> float:
     return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
+
 
 def create_polynomial_features(
     df, columns, degree=2, include_bias=False, interaction_only=False
