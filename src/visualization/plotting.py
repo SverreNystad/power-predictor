@@ -302,8 +302,7 @@ def plot_correlation_matrix(df: pd.DataFrame, title: str, show: bool = False) ->
     correlation_matrix = df.corr()
     # Compute the correlation matrix
     plt.figure(figsize=(20, 20))
-    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1, 
-                annot_kws={'ha': 'center', 'va': 'center'})
+    sns.heatmap(correlation_matrix, annot=True, cmap='RdYlGn', vmin=-1, vmax=1)
     plt.title(title)
     plt.savefig(f'{FIGURE_PATH}feature_correlation/{title}_correlation.png')
     if show:
