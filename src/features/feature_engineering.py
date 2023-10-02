@@ -9,6 +9,174 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, PolynomialFeatur
 import math
 
 
+def prepare_data(
+    train_observed: pd.DataFrame,
+    train_estimated: pd.DataFrame,
+    test_size=0.2,
+    random_state=42,
+) -> Tuple[
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.Series,
+    pd.Series,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.Series,
+    pd.Series,
+]:
+    """
+    Prepares the data for modeling by handling missing values and splitting the data.
+
+    Args:
+    train_observed (pd.DataFrame): The aligned training DataFrame with observed features.
+    train_estimated (pd.DataFrame): The aligned training DataFrame with estimated features.
+    test_size (float): The proportion of the dataset to include in the test split.
+    random_state (int): Controls the shuffling applied to the data before applying the split.
+
+    Returns:
+    X_train_obs (pd.DataFrame): The training features with observed data.
+    X_val_obs (pd.DataFrame): The validation features with observed data.
+    y_train_obs (pd.Series): The training target with observed data.
+    y_val_obs (pd.Series): The validation target with observed data.
+    X_train_est (pd.DataFrame): The training features with estimated data.
+    X_val_est (pd.DataFrame): The validation features with estimated data.
+    y_train_est (pd.Series): The training target with estimated data.
+    y_val_est (pd.Series): The validation target with estimated data.
+    """
+
+    print(f"Before dropping {train_observed.shape}")
+
+    # Remove missing features
+
+    train_observed = remove_missing_features(train_observed)
+    train_estimated = remove_missing_features(train_estimated)
+    print(f"Description missing values: {train_observed.isna().sum()}")
+
+    # Handle missing values (e.g., imputation, removal)
+    train_observed_clean = train_observed.dropna()
+    train_estimated_clean = train_estimated.dropna()
+
+    print(f"After dropping {train_observed_clean.shape}")
+
+    # # Feature engineer
+    train_observed_clean = feature_engineer(train_observed_clean)
+    train_estimated_clean = feature_engineer(train_estimated_clean)
+
+    # Split the data into features (X) and target (y)
+    X_obs = train_observed_clean.drop(
+        columns=["time", "pv_measurement", "date_forecast"]
+    )
+    y_obs = train_observed_clean["pv_measurement"]
+
+    X_est = train_estimated_clean.drop(
+        columns=["time", "pv_measurement", "date_forecast"]
+    )
+    y_est = train_estimated_clean["pv_measurement"]
+
+    # Split the data into training and validation sets
+    X_train_obs, X_val_obs, y_train_obs, y_val_obs = train_test_split(
+        X_obs, y_obs, test_size=test_size, random_state=random_state
+    )
+    X_train_est, X_val_est, y_train_est, y_val_est = train_test_split(
+        X_est, y_est, test_size=test_size, random_state=random_state
+    )
+
+    return (
+        X_train_obs,
+        X_val_obs,
+        y_train_obs,
+        y_val_obs,
+        X_train_est,
+        X_val_est,
+        y_train_est,
+        y_val_est,
+    )
+
+
+def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.drop("snow_density:kgm3", axis=1)
+    df = df.drop("ceiling_height_agl:m", axis=1)
+    df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
+    df = df.drop("elevation:m", axis=1)
+    return df
+
+
+def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
+    data_frame = create_time_features_from_date(data_frame)
+    return data_frame
+
+
+def create_time_features_from_date(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Create a new data frame with new features from date_forecast column.
+    This will create temporal features from date_forecast that are easier to learn by the model.
+    It creates the following features: month, season, year, day_of_year, day_segment.
+    All of the new features are int type.
+
+    Args:
+        df (pd.DataFrame): Data frame with date_forecast column.
+    Returns:
+        pd.DataFrame: Data frame copy with new features.
+
+    """
+    df["sin_day_of_year"] = df["date_forecast"].apply(get_sin_day)
+    df["cos_day_of_year"] = df["date_forecast"].apply(get_cos_day)
+    df["sin_hour"] = df["date_forecast"].apply(get_sin_hour)
+    df["cos_hour"] = df["date_forecast"].apply(get_cos_hour)
+    return df
+
+
+def get_sin_hour(date: datetime) -> float:
+    return math.sin(2 * math.pi * (date.hour) / 24)
+
+
+def get_cos_hour(date: datetime) -> float:
+    return math.cos(2 * math.pi * (date.hour) / 24)
+
+
+def get_month(date: datetime) -> int:
+    return date.month
+
+
+def get_season(month: int) -> int:
+    """
+    Returns the season based on the given month. The seasons are divided as follows:
+    * Winter: December, January, February (1, 2, 3)
+    * Spring: March, April, May (4, 5, 6)
+    * Summer: June, July, August (7, 8, 9)
+    * Fall: September, October, November (10, 11, 12)
+    """
+    if month == 12:
+        return 1
+    return ((month) // 3) + 1
+
+
+def get_year(date: datetime) -> int:
+    return date.year
+
+
+def get_day_of_year(date: datetime) -> int:
+    return date.timetuple().tm_yday
+
+
+def get_sin_day(date: datetime) -> float:
+    return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
+
+
+def get_cos_day(date: datetime) -> float:
+    return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
+
+
+def get_day_segment(date: datetime) -> int:
+    """
+    Returns a segment of the day based on the hour and minute of the given date.
+    The day is divided into 96 segments, each segment representing a 15-minute interval.
+    """
+    hour_in_15_min_intervals = date.hour * 4
+    minute_in_15_min_intervals = date.minute // 15
+    return hour_in_15_min_intervals + minute_in_15_min_intervals
+
+
 def create_polynomial_features(
     df, columns, degree=2, include_bias=False, interaction_only=False
 ):
@@ -132,81 +300,6 @@ def create_domain_specific_features(df):
     return df_domain
 
 
-def create_time_features_from_date(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Create a new data frame with new features from date_forecast column.
-    This will create temporal features from date_forecast that are easier to learn by the model.
-    It creates the following features: month, season, year, day_of_year, day_segment.
-    All of the new features are int type.
-
-    Args:
-        df (pd.DataFrame): Data frame with date_forecast column.
-    Returns:
-        pd.DataFrame: Data frame copy with new features.
-
-    """
-    df["sin_day_of_year"] = df["date_forecast"].apply(get_sin_day)
-    df["cos_day_of_year"] = df["date_forecast"].apply(get_cos_day)
-    df["sin_hour"] = df["date_forecast"].apply(get_sin_hour)
-    df["cos_hour"] = df["date_forecast"].apply(get_cos_hour)
-    return df
-
-
-def get_sin_hour(date: datetime) -> float:
-    return math.sin(2 * math.pi * (date.hour) / 24)
-
-
-def get_cos_hour(date: datetime) -> float:
-    return math.cos(2 * math.pi * (date.hour) / 24)
-
-
-def get_month(date: datetime) -> int:
-    return date.month
-
-
-def get_season(month: int) -> int:
-    """
-    Returns the season based on the given month. The seasons are divided as follows:
-    * Winter: December, January, February (1, 2, 3)
-    * Spring: March, April, May (4, 5, 6)
-    * Summer: June, July, August (7, 8, 9)
-    * Fall: September, October, November (10, 11, 12)
-    """
-    if month == 12:
-        return 1
-    return ((month) // 3) + 1
-
-
-def get_year(date: datetime) -> int:
-    return date.year
-
-
-def get_day_of_year(date: datetime) -> int:
-    return date.timetuple().tm_yday
-
-
-def get_sin_day(date: datetime) -> float:
-    return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
-
-
-def get_cos_day(date: datetime) -> float:
-    return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
-
-
-def drop_features(df: pd.DataFrame) -> pd.DataFrame:
-    return df
-
-
-def get_day_segment(date: datetime) -> int:
-    """
-    Returns a segment of the day based on the hour and minute of the given date.
-    The day is divided into 96 segments, each segment representing a 15-minute interval.
-    """
-    hour_in_15_min_intervals = date.hour * 4
-    minute_in_15_min_intervals = date.minute // 15
-    return hour_in_15_min_intervals + minute_in_15_min_intervals
-
-
 def remove_date_time_feature(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
     Remove date_forecast column from data frame.
@@ -257,109 +350,6 @@ def add_location(data_frame: pd.DataFrame, location: str):
     return data_frame
 
 
-def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
-    # features_to_scale = data_frame.select_dtypes(
-    #     exclude=["datetime64"]
-    # ).columns.tolist()
-    # if "pv_measurement" in features_to_scale:
-    #     features_to_scale.remove("pv_measurement")
-    # data_frame = scale_features(data_frame, features_to_scale)
-    data_frame = create_time_features_from_date(data_frame)
-    return data_frame
-
-
-def prepare_data(
-    train_observed: pd.DataFrame,
-    train_estimated: pd.DataFrame,
-    test_size=0.2,
-    random_state=42,
-) -> Tuple[
-    pd.DataFrame,
-    pd.DataFrame,
-    pd.Series,
-    pd.Series,
-    pd.DataFrame,
-    pd.DataFrame,
-    pd.Series,
-    pd.Series,
-]:
-    """
-    Prepares the data for modeling by handling missing values and splitting the data.
-
-    Args:
-    train_observed (pd.DataFrame): The aligned training DataFrame with observed features.
-    train_estimated (pd.DataFrame): The aligned training DataFrame with estimated features.
-    test_size (float): The proportion of the dataset to include in the test split.
-    random_state (int): Controls the shuffling applied to the data before applying the split.
-
-    Returns:
-    X_train_obs (pd.DataFrame): The training features with observed data.
-    X_val_obs (pd.DataFrame): The validation features with observed data.
-    y_train_obs (pd.Series): The training target with observed data.
-    y_val_obs (pd.Series): The validation target with observed data.
-    X_train_est (pd.DataFrame): The training features with estimated data.
-    X_val_est (pd.DataFrame): The validation features with estimated data.
-    y_train_est (pd.Series): The training target with estimated data.
-    y_val_est (pd.Series): The validation target with estimated data.
-    """
-
-    print(f"Before dropping {train_observed.shape}")
-
-    # Remove missing features
-
-    train_observed = remove_missing_features(train_observed)
-    train_estimated = remove_missing_features(train_estimated)
-    print(f"Description missing values: {train_observed.isna().sum()}")
-
-    # Handle missing values (e.g., imputation, removal)
-    train_observed_clean = train_observed.dropna()
-    train_estimated_clean = train_estimated.dropna()
-
-    print(f"After dropping {train_observed_clean.shape}")
-
-    # # Feature engineer
-    train_observed_clean = feature_engineer(train_observed_clean)
-    train_estimated_clean = feature_engineer(train_estimated_clean)
-
-    # Split the data into features (X) and target (y)
-    X_obs = train_observed_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast"]
-    )
-    y_obs = train_observed_clean["pv_measurement"]
-
-    X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast", "date_calc"]
-    )
-    y_est = train_estimated_clean["pv_measurement"]
-
-    # Split the data into training and validation sets
-    X_train_obs, X_val_obs, y_train_obs, y_val_obs = train_test_split(
-        X_obs, y_obs, test_size=test_size, random_state=random_state
-    )
-    X_train_est, X_val_est, y_train_est, y_val_est = train_test_split(
-        X_est, y_est, test_size=test_size, random_state=random_state
-    )
-
-    return (
-        X_train_obs,
-        X_val_obs,
-        y_train_obs,
-        y_val_obs,
-        X_train_est,
-        X_val_est,
-        y_train_est,
-        y_val_est,
-    )
-
-
-def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.drop("snow_density:kgm3", axis=1)
-    df = df.drop("ceiling_height_agl:m", axis=1)
-    df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
-    df = df.drop("elevation:m", axis=1)
-    return df
-
-
 # Define a function to align the temporal resolution of the datasets
 def temporal_alignment(
     train: pd.DataFrame, observed: pd.DataFrame, estimated: pd.DataFrame
@@ -402,3 +392,55 @@ def temporal_alignment(
     )
 
     return train_observed, train_estimated
+
+
+def _add_calc_date_and_correct_target(data_frame: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add date_calc feature for each hour of the next day and now
+
+    Args:
+        data_frame (pd.DataFrame): Data frame with date_forecast column.
+    Returns:
+        pd.DataFrame: Data frame copy with date_calc column and corresponding pv_measurements.
+    """
+
+    # Check that the date_calc is not already in the dataframe
+    if "date_calc" in data_frame.columns:
+        return data_frame
+
+    df = data_frame.copy()
+
+    # Add date_calc for current time so that the model can learn what weather conditions lead to the current pv_measurement
+    df["date_calc"] = df["date_forecast"] + pd.DateOffset(hours=0)
+
+    # Add date_calc for each hour of the next day
+    rows_list = []
+    start_of_next_day = 24
+    end_of_next_day = 48
+
+    pv_lookup = df.set_index("date_forecast")["pv_measurement"].to_dict()
+
+    rows_list = []
+
+    # Vectorized approach to create new rows
+    for next_day_hour in range(
+        start_of_next_day, end_of_next_day
+    ):  # 25 to 48 hours for the next day
+        new_rows = df.copy()
+
+        new_rows["date_forecast"] = df["date_forecast"] + pd.to_timedelta(
+            next_day_hour, unit="h"
+        )
+        # Lookup the pv_measurement for the corresponding date_forecast
+        new_rows["pv_measurement"] = new_rows["date_forecast"].map(pv_lookup)
+        new_rows["date_forecast"] = next_day_hour
+        rows_list.append(new_rows)
+
+    df_new_rows = pd.concat(rows_list, ignore_index=True)
+    df = (
+        pd.concat([df, df_new_rows], ignore_index=True)
+        .sort_values(by=["date_calc"])
+        .reset_index(drop=True)
+    )
+
+    return df
