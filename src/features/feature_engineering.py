@@ -398,3 +398,47 @@ def temporal_alignment(
     )
 
     return train_observed, train_estimated
+
+
+def _add_calc_date_and_correct_target(data_frame: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add date_calc feature for each hour of the next day and now
+    
+    Args:
+        data_frame (pd.DataFrame): Data frame with date_forecast column.
+    Returns:
+        pd.DataFrame: Data frame copy with date_calc column and corresponding pv_measurements.
+    """
+
+    # Check that the date_calc is not already in the dataframe
+    if "date_calc" in data_frame.columns:
+        return data_frame
+    
+    df = data_frame.copy()
+
+    # Add date_calc for current time so that the model can learn what weather conditions lead to the current pv_measurement
+    df["date_calc"] = df["date_forecast"] + pd.DateOffset(hours=0)
+
+    # Add date_calc for each hour of the next day
+    rows_list = []
+    start_of_next_day = 24
+    end_of_next_day = 48
+
+    pv_lookup = df.set_index('date_forecast')['pv_measurement'].to_dict()
+
+    rows_list = []
+
+    # Vectorized approach to create new rows
+    for next_day_hour in range(start_of_next_day, end_of_next_day):  # 25 to 48 hours for the next day
+        new_rows = df.copy()
+
+        new_rows['date_forecast'] = df['date_forecast'] + pd.to_timedelta(next_day_hour, unit='h')
+        # Lookup the pv_measurement for the corresponding date_forecast
+        new_rows['pv_measurement'] = new_rows['date_forecast'].map(pv_lookup) 
+        new_rows['date_forecast'] = next_day_hour
+        rows_list.append(new_rows)
+    
+    df_new_rows = pd.concat(rows_list, ignore_index=True)
+    df = pd.concat([df, df_new_rows], ignore_index=True).sort_values(by=['date_calc']).reset_index(drop=True)
+    
+    return df
