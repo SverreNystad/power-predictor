@@ -193,6 +193,10 @@ def get_cos_day(date: datetime) -> float:
     return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
 
 
+def drop_features(df: pd.DataFrame) -> pd.DataFrame:
+    return df
+
+
 def get_day_segment(date: datetime) -> int:
     """
     Returns a segment of the day based on the hour and minute of the given date.
@@ -324,7 +328,7 @@ def prepare_data(
     y_obs = train_observed_clean["pv_measurement"]
 
     X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast"]
+        columns=["time", "pv_measurement", "date_forecast", "date_calc"]
     )
     y_est = train_estimated_clean["pv_measurement"]
 
