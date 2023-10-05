@@ -92,22 +92,149 @@ def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop("ceiling_height_agl:m", axis=1)
     df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
     df = df.drop("elevation:m", axis=1)
-    df = df.drop("fresh_snow_12h:cm", axis=1)
-    df = df.drop("fresh_snow_1h:cm", axis=1)
-    df = df.drop("fresh_snow_24h:cm", axis=1)
-    df = df.drop("fresh_snow_3h:cm", axis=1)
-    df = df.drop("fresh_snow_6h:cm", axis=1)
-    df = df.drop("wind_speed_u_10m:ms", axis=1)
+
+    # df = df.drop("wind_speed_u_10m:ms", axis=1)
     # df = df.drop("wind_speed_10m:ms", axis=1)
     # df = df.drop("wind_speed_v_10m:ms", axis=1)
-    df = df.drop("wind_speed_w_1000hPa:ms", axis=1)
+    # df = df.drop("wind_speed_w_1000hPa:ms", axis=1)
 
     return df
 
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = create_time_features_from_date(data_frame)
+    data_frame["sun_product"] = data_frame["diffuse_rad:W"] * data_frame["direct_rad:W"]
+
+    data_frame["modified_solar_elevation"] = np.where(
+        data_frame["sun_elevation:d"] <= 0,
+        0,
+        np.sin(np.radians(data_frame["sun_elevation:d"])),
+    )
+    data_frame = data_frame.drop("sun_elevation:d", axis=1)
+
+    data_frame["effective_radiation"] = np.where(
+        data_frame["clear_sky_energy_1h:J"] == 0,
+        0,  # or your specified value
+        data_frame["direct_rad_1h:J"] / data_frame["clear_sky_energy_1h:J"],
+    )
+
+    # WAS WORSE
+    # data_frame["effective_radiation2"] = np.where(
+    #     data_frame["clear_sky_rad:W"] == 0,
+    #     0,  # or your specified value
+    #     data_frame["direct_rad:W"] / data_frame["clear_sky_rad:W"],
+    # )
+
+    data_frame["cloud_ratio"] = np.where(
+        data_frame["total_cloud_cover:p"] == 0,
+        0,  # or your specified value
+        data_frame["effective_cloud_cover:p"] / data_frame["total_cloud_cover:p"],
+    )
+
+    snow_columns = [
+        "snow_depth:cm",
+        "fresh_snow_12h:cm",
+        "fresh_snow_1h:cm",
+        "fresh_snow_24h:cm",
+        "fresh_snow_3h:cm",
+        "fresh_snow_6h:cm",
+    ]
+
+    # data_frame["surface_temperature"] = data_frame.apply(calculate_surface_temp, axis=1)
+    # data_frame["50m_temperature"] = data_frame.apply(calculate_50m_temp, axis=1)
+    # data_frame["100m_temperature"] = data_frame.apply(calculate_100m_temp, axis=1)
+    # data_frame = data_frame.drop("t_1000hPa:K", axis=1)
+
+    # data_frame["sun_addition"] = (
+    #     data_frame["direct_rad_1h:J"] + data_frame["diffuse_rad_1h:J"]
+    # )
+
+    data_frame["sun_addition"] = (
+        data_frame["diffuse_rad:W"] + data_frame["direct_rad:W"]
+    )
+
+    data_frame["is_freezing"] = (data_frame["t_1000hPa:K"] < 273).astype(int)
+
+    data_frame["is_snow"] = (data_frame[snow_columns] > 0).any(axis=1).astype(int)
+    data_frame["is_rain"] = (data_frame["precip_5min:mm"] > 0).astype(int)
+
+    data_frame = data_frame.drop("snow_drift:idx", axis=1)
+    data_frame = data_frame.drop("snow_depth:cm", axis=1)
+    data_frame = data_frame.drop("snow_water:kgm2", axis=1)
+    data_frame = data_frame.drop("fresh_snow_12h:cm", axis=1)
+    data_frame = data_frame.drop("fresh_snow_1h:cm", axis=1)
+    data_frame = data_frame.drop("fresh_snow_24h:cm", axis=1)
+    data_frame = data_frame.drop("fresh_snow_3h:cm", axis=1)
+    data_frame = data_frame.drop("fresh_snow_6h:cm", axis=1)
+    data_frame = data_frame.drop("snow_melt_10min:mm", axis=1)
+
     return data_frame
+
+
+def calculate_surface_temp(row):
+    # Constants
+    R = 287  # Specific gas constant for dry air, J kg^-1 K^-1
+    g = 9.81  # Acceleration due to gravity, m s^-2
+    lapse_rate = 0.0065  # Average lapse rate, K m^-1
+
+    P1 = 1000  # Initial pressure level, hPa
+    P2 = row["sfc_pressure:hPa"]  # Final pressure level, hPa
+    T1 = row["t_1000hPa:K"]  # Temperature at P1, K
+
+    # Altitude difference using barometric formula (approximation)
+    delta_h = (R * T1 / g) * np.log(P1 / P2)
+
+    # Temperature difference using constant lapse rate
+    delta_T = lapse_rate * delta_h
+
+    # Temperature at P2, converting from K to C
+    T2_C = T1 - delta_T - 273.15
+
+    return T2_C
+
+
+def calculate_50m_temp(row):
+    # Constants
+    R = 287  # Specific gas constant for dry air, J kg^-1 K^-1
+    g = 9.81  # Acceleration due to gravity, m s^-2
+    lapse_rate = 0.0065  # Average lapse rate, K m^-1
+
+    P1 = 1000  # Initial pressure level, hPa
+    P2 = row["pressure_50m:hPa"]  # Final pressure level, hPa
+    T1 = row["t_1000hPa:K"]  # Temperature at P1, K
+
+    # Altitude difference using barometric formula (approximation)
+    delta_h = (R * T1 / g) * np.log(P1 / P2)
+
+    # Temperature difference using constant lapse rate
+    delta_T = lapse_rate * delta_h
+
+    # Temperature at P2, converting from K to C
+    T2_C = T1 - delta_T - 273.15
+
+    return T2_C
+
+
+def calculate_100m_temp(row):
+    # Constants
+    R = 287  # Specific gas constant for dry air, J kg^-1 K^-1
+    g = 9.81  # Acceleration due to gravity, m s^-2
+    lapse_rate = 0.0065  # Average lapse rate, K m^-1
+
+    P1 = 1000  # Initial pressure level, hPa
+    P2 = row["pressure_100m:hPa"]  # Final pressure level, hPa
+    T1 = row["t_1000hPa:K"]  # Temperature at P1, K
+
+    # Altitude difference using barometric formula (approximation)
+    delta_h = (R * T1 / g) * np.log(P1 / P2)
+
+    # Temperature difference using constant lapse rate
+    delta_T = lapse_rate * delta_h
+
+    # Temperature at P2, converting from K to C
+    T2_C = T1 - delta_T - 273.15
+
+    return T2_C
 
 
 def create_time_features_from_date(df: pd.DataFrame) -> pd.DataFrame:
@@ -140,6 +267,7 @@ def get_cos_hour(date: datetime) -> float:
 
 def get_sin_day(date: datetime) -> float:
     return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
+
 
 def get_cos_day(date: datetime) -> float:
     return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
@@ -266,6 +394,7 @@ def create_domain_specific_features(df):
     df_domain["is_snow_cover"] = (df_domain["snow_depth:cm"] > 0).astype(int)
 
     return df_domain
+
 
 def clean_data(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
