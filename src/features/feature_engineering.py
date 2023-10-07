@@ -67,7 +67,7 @@ def prepare_data(
     y_obs = train_observed_clean["pv_measurement"]
 
     X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast", "date_calc"]
+        columns=["time", "pv_measurement", "date_forecast"]
     )
     y_est = train_estimated_clean["pv_measurement"]
 
@@ -109,7 +109,7 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
     Remove positive pv measurements when is_day is 0 and pv_measurement is positive and pv_measurement is the same next timestep
     """
     # Remove positive pv measurements when is_day is 0 and pv_measurement is positive and pv_measurement is the same next timestep 
-    df = df.drop(df[(df["is_day"] == 0) & (df["pv_measurement"] > 0) & (df["pv_measurement"] == df["pv_measurement"].shift(1))].index)
+    df = df.drop(df[(df["is_day:idx"] == 0) & (df["pv_measurement"] > 0) & (df["pv_measurement"] == df["pv_measurement"].shift(1))].index)
     return df
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
