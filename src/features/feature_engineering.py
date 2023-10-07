@@ -52,11 +52,7 @@ def prepare_data(
     train_observed_clean = train_observed.dropna()
     train_estimated_clean = train_estimated.dropna()
 
-    # Remove positive pv measurements when is_day is 0 and pv_measurement is positive and pv_measurement is the same next timestep
-    train_observed_clean = remove_positive_pv_in_night(train_observed_clean)
-    train_estimated_clean = remove_positive_pv_in_night(train_estimated_clean)
-
-    # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
+    # Remove discrepancies
     train_observed_clean = remove_discrepancies(train_observed_clean)
     train_estimated_clean = remove_discrepancies(train_estimated_clean)
 
@@ -108,17 +104,18 @@ def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
+    df = remove_positive_pv_in_night(df)
+    df = remove_night_light_discrepancies(df)
+    df = remove_zero_value_discrepancies(df)
+    return df
+
 def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
     """
     Remove positive pv measurements when is_day is 0 and pv_measurement is positive and pv_measurement is the same next timestep
     """
     # Remove positive pv measurements when is_day is 0 and pv_measurement is positive and pv_measurement is the same next timestep 
     df = df.drop(df[(df["is_day:idx"] == 0) & (df["pv_measurement"] > 0) & (df["pv_measurement"] == df["pv_measurement"].shift(1))].index)
-    return df
-
-def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
-    df = remove_night_light_discrepancies(df)
-    df = remove_zero_value_discrepancies(df)
     return df
 
 def remove_night_light_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
