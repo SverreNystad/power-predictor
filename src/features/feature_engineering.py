@@ -59,7 +59,7 @@ def prepare_data(
     # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
     train_observed_clean = remove_discrepancies(train_observed_clean)
     train_estimated_clean = remove_discrepancies(train_estimated_clean)
-    
+
     # Feature engineer
     train_observed_clean = feature_engineer(train_observed_clean)
     train_estimated_clean = feature_engineer(train_estimated_clean)
@@ -118,8 +118,20 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
 
 def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
-    df = df.drop(df[(df["pv_measurement"] == df["pv_measurement"].shift(1)) & (df["pv_measurement"] == df["pv_measurement"].shift(2)) & (df["pv_measurement"] == df["pv_measurement"].shift(3)) & (df["pv_measurement"] == df["pv_measurement"].shift(4)) & (df["pv_measurement"] == df["pv_measurement"].shift(5)) & (df["pv_measurement"] == df["pv_measurement"].shift(6)) & (df["pv_measurement"] != 0)].index)
-    return df
+    
+    # Step 1: Identify runs of equal, non-zero values
+    df['group'] = ((df['pv_measurement'] != df['pv_measurement'].shift()) | 
+                (df['pv_measurement'] == 0)).cumsum()
+
+    # Step 2: Count occurrences in each run
+    counts = df.groupby('group')['pv_measurement'].transform('count')
+
+    # Step 3: Identify groups to remove
+    to_remove = (counts >= 6) & (df['pv_measurement'] != 0)
+
+    # Step 4: Remove those rows
+    df_cleaned = df[~to_remove].drop(columns=['group'])
+    return df_cleaned
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = create_time_features_from_date(data_frame)
