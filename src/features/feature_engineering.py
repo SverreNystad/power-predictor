@@ -100,6 +100,10 @@ def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
+    # Remove positive pv measurements when is_day is 0 and pv_measurement is positive and pv_measurement is the same next timestep 
+    df = df.drop(df[(df["is_day"] == 0) & (df["pv_measurement"] > 0) & (df["pv_measurement"] == df["pv_measurement"].shift(1))].index)
+    return df
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = create_time_features_from_date(data_frame)
