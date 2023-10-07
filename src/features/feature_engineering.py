@@ -155,7 +155,7 @@ def remove_zero_value_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
 
 def remove_faulty_zero_measurements_for_direct_sun_light(df: pd.DataFrame) -> pd.DataFrame:
     """ """
-    mask = [((df['diffuse_rad:W']+df["direct_rad:W"]) >= 30) & (df["pv_measurement"] == 0)]
+    mask = ((df['diffuse_rad:W']+df["direct_rad:W"]) >= 30) & (df["pv_measurement"] == 0)
     df = df[~mask]
     return df
 
