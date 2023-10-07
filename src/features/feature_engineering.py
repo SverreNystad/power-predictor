@@ -56,6 +56,10 @@ def prepare_data(
     train_observed_clean = remove_positive_pv_in_night(train_observed_clean)
     train_estimated_clean = remove_positive_pv_in_night(train_estimated_clean)
 
+    # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
+    train_observed_clean = remove_discrepancies(train_observed_clean)
+    train_estimated_clean = remove_discrepancies(train_estimated_clean)
+    
     # Feature engineer
     train_observed_clean = feature_engineer(train_observed_clean)
     train_estimated_clean = feature_engineer(train_estimated_clean)
@@ -110,6 +114,11 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
     """
     # Remove positive pv measurements when is_day is 0 and pv_measurement is positive and pv_measurement is the same next timestep 
     df = df.drop(df[(df["is_day:idx"] == 0) & (df["pv_measurement"] > 0) & (df["pv_measurement"] == df["pv_measurement"].shift(1))].index)
+    return df
+
+def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
+    # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
+    df = df.drop(df[(df["pv_measurement"] == df["pv_measurement"].shift(1)) & (df["pv_measurement"] == df["pv_measurement"].shift(2)) & (df["pv_measurement"] == df["pv_measurement"].shift(3)) & (df["pv_measurement"] == df["pv_measurement"].shift(4)) & (df["pv_measurement"] == df["pv_measurement"].shift(5)) & (df["pv_measurement"] == df["pv_measurement"].shift(6)) & (df["pv_measurement"] != 0)].index)
     return df
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
