@@ -119,6 +119,7 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
 def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     df = remove_night_light_discrepancies(df)
     df = remove_zero_value_discrepancies(df)
+    return df
 
 def remove_night_light_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
