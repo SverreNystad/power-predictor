@@ -52,6 +52,10 @@ def prepare_data(
     train_observed_clean = train_observed.dropna()
     train_estimated_clean = train_estimated.dropna()
 
+    # Remove positive pv measurements when is_day is 0 and pv_measurement is positive and pv_measurement is the same next timestep
+    train_observed_clean = remove_positive_pv_in_night(train_observed_clean)
+    train_estimated_clean = remove_positive_pv_in_night(train_estimated_clean)
+
     # Feature engineer
     train_observed_clean = feature_engineer(train_observed_clean)
     train_estimated_clean = feature_engineer(train_estimated_clean)
