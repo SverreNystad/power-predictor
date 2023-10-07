@@ -118,6 +118,12 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["direct_rad_1h:J"] / data_frame["clear_sky_energy_1h:J"],
     )
 
+    data_frame["residual_radiation"] = (
+        data_frame["clear_sky_rad:W"]
+        - data_frame["direct_rad:W"]
+        - data_frame["diffuse_rad:W"]
+    )
+
     # WAS WORSE
     # data_frame["effective_radiation2"] = np.where(
     #     data_frame["clear_sky_rad:W"] == 0,
@@ -129,6 +135,14 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["total_cloud_cover:p"] == 0,
         0,  # or your specified value
         data_frame["effective_cloud_cover:p"] / data_frame["total_cloud_cover:p"],
+    )
+
+    # data_frame["diffuse_cloud_conditional_interaction"] = data_frame[
+    #     "diffuse_rad:W"
+    # ].where(data_frame["effective_cloud_cover:p"] < 0.3, 0)
+
+    data_frame["cloud_cover_over_30%"] = np.where(
+        data_frame["effective_cloud_cover:p"] > 30, 1, 0
     )
 
     snow_columns = [
