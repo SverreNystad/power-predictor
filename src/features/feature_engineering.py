@@ -117,6 +117,10 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
+    df = remove_night_light_discrepancies(df)
+    df = remove_zero_value_discrepancies(df)
+
+def remove_night_light_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
     
     # Step 1: Identify runs of equal, non-zero values
@@ -132,6 +136,25 @@ def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     # Step 4: Remove those rows
     df_cleaned = df[~to_remove].drop(columns=['group'])
     return df_cleaned
+
+def remove_zero_value_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
+    # Remove all rows where pv_measurement has the same value for 100 timesteps and is 0 remove them
+    
+    # Step 1: Identify runs of equal, non-zero values
+    df['group'] = ((df['pv_measurement'] != df['pv_measurement'].shift()) | 
+                (df['pv_measurement'] == 0)).cumsum()
+
+    # Step 2: Count occurrences in each run
+    counts = df.groupby('group')['pv_measurement'].transform('count')
+
+    # Step 3: Identify groups to remove
+    to_remove = (counts >= 100) & (df['pv_measurement'] == 0)
+
+    # Step 4: Remove those rows
+    df_cleaned = df[~to_remove].drop(columns=['group'])
+    return df_cleaned
+
+
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = create_time_features_from_date(data_frame)
