@@ -108,6 +108,7 @@ def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     df = remove_positive_pv_in_night(df)
     df = remove_night_light_discrepancies(df)
     df = remove_zero_value_discrepancies(df)
+    df = remove_faulty_zero_measurements_for_direct_sun_light(df)
     return df
 
 def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
@@ -146,13 +147,17 @@ def remove_zero_value_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     counts = df.groupby('group')['pv_measurement'].transform('count')
 
     # Step 3: Identify groups to remove
-    to_remove = (counts >= 100) & (df['pv_measurement'] == 0)
+    to_remove = (counts >= 50) & (df['pv_measurement'] == 0) & (df["is_day:idx"] == 1) 
 
     # Step 4: Remove those rows
     df_cleaned = df[~to_remove].drop(columns=['group'])
     return df_cleaned
 
-
+def remove_faulty_zero_measurements_for_direct_sun_light(df: pd.DataFrame) -> pd.DataFrame:
+    """ """
+    mask = [((df['diffuse_rad:W']+df["direct_rad:W"]) >= 30) & (df["pv_measurement"] == 0)]
+    df = df[~mask]
+    return df
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = create_time_features_from_date(data_frame)
