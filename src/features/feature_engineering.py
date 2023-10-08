@@ -125,6 +125,10 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
             & (df["pv_measurement"] == df["pv_measurement"].shift(1))
         ].index
     )
+
+    # Remove positive pv measurements when sun_elevation is negative
+    threshold = -10
+    df = df.drop([(df["sun_elevation:d"] < threshold) & (df["pv_measurement"] > 0)].index)
     return df
 
 
