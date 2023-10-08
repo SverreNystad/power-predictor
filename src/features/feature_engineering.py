@@ -181,12 +181,12 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = create_time_features_from_date(data_frame)
     data_frame["sun_product"] = data_frame["diffuse_rad:W"] * data_frame["direct_rad:W"]
 
-    data_frame["modified_solar_elevation"] = np.where(
-        data_frame["sun_elevation:d"] <= 0,
-        0,
-        np.sin(np.radians(data_frame["sun_elevation:d"])),
-    )
-    data_frame = data_frame.drop("sun_elevation:d", axis=1)
+    # data_frame["modified_solar_elevation"] = np.where(
+    #     data_frame["sun_elevation:d"] <= 0,
+    #     0,
+    #     np.sin(np.radians(data_frame["sun_elevation:d"])),
+    # )
+    # data_frame = data_frame.drop("sun_elevation:d", axis=1)
 
     data_frame["effective_radiation"] = np.where(
         data_frame["clear_sky_energy_1h:J"] == 0,
@@ -194,11 +194,11 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["direct_rad_1h:J"] / data_frame["clear_sky_energy_1h:J"],
     )
 
-    data_frame["residual_radiation"] = (
-        data_frame["clear_sky_rad:W"]
-        - data_frame["direct_rad:W"]
-        - data_frame["diffuse_rad:W"]
-    )
+    # data_frame["residual_radiation"] = (
+    #     data_frame["clear_sky_rad:W"]
+    #     - data_frame["direct_rad:W"]
+    #     - data_frame["diffuse_rad:W"]
+    # )
 
     # WAS WORSE
     # data_frame["effective_radiation2"] = np.where(
