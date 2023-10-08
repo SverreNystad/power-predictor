@@ -219,9 +219,9 @@ def get_preprocessed_test_data_with_time(
         _,
         _,
         _,
-        X_train_observed_a,
-        X_train_observed_b,
-        X_train_observed_c,
+        _,
+        _,
+        _,
         X_test_estimated_a,
         X_test_estimated_b,
         X_test_estimated_c,
@@ -231,21 +231,25 @@ def get_preprocessed_test_data_with_time(
     X_test_estimated_b = remove_missing_features(X_test_estimated_b)
     X_test_estimated_c = remove_missing_features(X_test_estimated_c)
 
+    X_test_estimated_a = add_location(X_test_estimated_a, "a")
+    X_test_estimated_b = add_location(X_test_estimated_b, "b")
+    X_test_estimated_c = add_location(X_test_estimated_c, "c")
 
     X_test_a_correct_features = feature_engineer(X_test_estimated_a)
     X_test_b_correct_features = feature_engineer(X_test_estimated_b)
     X_test_c_correct_features = feature_engineer(X_test_estimated_c)
     
+    X_train_obs_combined, X_val_obs_combined, y_train_obs_combined, y_val_obs_combined, X_train_est_combined, X_val_est_combined, y_train_est_combined, y_val_est_combined = fetch_preprocessed_data()
+    
     # Add historical data so that the model can use it for prediction
     # Add mean_pv_measurement with same day and hour from previous years
-    X_test_a_correct_features = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_observed_a)
-    X_test_b_correct_features = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_observed_b)
-    X_test_c_correct_features = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_observed_c)
-
-
-    X_test_estimated_a_processed = X_test_a_correct_features.drop(columns=["date_calc"])
-    X_test_estimated_b_processed = X_test_b_correct_features.drop(columns=["date_calc"])
-    X_test_estimated_c_processed = X_test_c_correct_features.drop(columns=["date_calc"])
+    X_test_estimated_a_with_historical_data = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_obs_combined)
+    X_test_estimated_b_with_historical_data = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_obs_combined)
+    X_test_estimated_c_with_historical_data = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_obs_combined)
+    
+    X_test_estimated_a_processed = X_test_estimated_a_with_historical_data.drop(columns=["date_calc"], errors='ignore')
+    X_test_estimated_b_processed = X_test_estimated_b_with_historical_data.drop(columns=["date_calc"], errors='ignore')
+    X_test_estimated_c_processed = X_test_estimated_c_with_historical_data.drop(columns=["date_calc"], errors='ignore')
 
     # Handle NaN values in the test data by filling them with the mean value of the respective column from the training data
     X_test_estimated_a_processed.fillna(fill, inplace=True)
@@ -284,6 +288,24 @@ def add_expected_pv_to_test_data(test_df: pd.DataFrame, train_df: pd.DataFrame) 
                        on=['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'], 
                        how='left')
     
+    # Ensure that test_df has the same feature order as train_df
+    train_columns = train_df.columns.tolist()
+    
+    print(f"Shapes: train_df={train_df.shape}, test_df={test_df.shape}")
+    original_test_columns = test_df.copy()
+    # If 'mean_pv_measurement' is in train_df columns, reorder test_df accordingly
+    if 'mean_pv_measurement' in train_columns:
+        # Ensure all columns in train_columns exist in test_df before reordering
+        existing_columns = [col for col in train_columns if col in test_df.columns]
+        # Add all the columns from are in test_df but not in train_df to the end of the DataFrame
+        additional_columns = [col for col in test_df.columns if col not in train_columns]
+        test_df = test_df[existing_columns + additional_columns]
+    print(f"Shapes after reordering: train_df={train_df.shape}, test_df={test_df.shape}")
+
+
+    # Drop the 'location' column from the test data
+    test_df.drop(columns=['location'], inplace=True)
+
     return test_df
 
 def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -297,9 +319,9 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
         _,
         _,
         _,
-        X_train_observed_a,
-        X_train_observed_b,
-        X_train_observed_c,
+        _,
+        _,
+        _,
         X_test_estimated_a,
         X_test_estimated_b,
         X_test_estimated_c,
@@ -311,31 +333,30 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
 
     # Add location data
     X_test_estimated_a = add_location(X_test_estimated_a, "a")
-
     X_test_estimated_b = add_location(X_test_estimated_b, "b")
-
     X_test_estimated_c = add_location(X_test_estimated_c, "c")
-
-    
-    # Add historical data so that the model can use it for prediction
-    # Add mean_pv_measurement with same day and hour from previous years
-    X_test_a_correct_features = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_observed_a)
-    X_test_b_correct_features = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_observed_b)
-    X_test_c_correct_features = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_observed_c)
 
     X_test_a_correct_features = feature_engineer(X_test_estimated_a)
     X_test_b_correct_features = feature_engineer(X_test_estimated_b)
     X_test_c_correct_features = feature_engineer(X_test_estimated_c)
 
+    X_train_obs_combined, X_val_obs_combined, y_train_obs_combined, y_val_obs_combined, X_train_est_combined, X_val_est_combined, y_train_est_combined, y_val_est_combined = fetch_preprocessed_data()
+    
+    # Add historical data so that the model can use it for prediction
+    # Add mean_pv_measurement with same day and hour from previous years
+    X_test_estimated_a_with_historical_data = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_obs_combined)
+    X_test_estimated_b_with_historical_data = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_obs_combined)
+    X_test_estimated_c_with_historical_data = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_obs_combined)
+
     # Drop the 'date_calc' and 'date_forecast' columns from the test data
-    X_test_estimated_a_processed = X_test_a_correct_features.drop(
-        columns=["date_calc", "date_forecast"]
+    X_test_estimated_a_processed = X_test_estimated_a_with_historical_data.drop(
+        columns=["date_calc", "date_forecast"], errors='ignore'
     )
-    X_test_estimated_b_processed = X_test_b_correct_features.drop(
-        columns=["date_calc", "date_forecast"]
+    X_test_estimated_b_processed = X_test_estimated_b_with_historical_data.drop(
+        columns=["date_calc", "date_forecast"], errors='ignore'
     )
-    X_test_estimated_c_processed = X_test_c_correct_features.drop(
-        columns=["date_calc", "date_forecast"]
+    X_test_estimated_c_processed = X_test_estimated_c_with_historical_data.drop(
+        columns=["date_calc", "date_forecast"], errors='ignore'
     )
 
     # Handle NaN values in the test data by filling them with the mean value of the respective column from the training data
