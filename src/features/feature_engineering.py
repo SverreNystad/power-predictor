@@ -417,29 +417,46 @@ def trig_transform(df: pd.DataFrame, column: str, period: int):
     return df_trig
 
 
-def create_lagged_features(df, column, n_lags):
+def create_lagged_features(df: pd.DataFrame, column: str, window: int):
     """
     Creates lagged features for a given column in a DataFrame.
-    Decide on the column for which you want to create lagged features. Usually, it's the column containing time-series data, like solar energy production or temperature.
-    Decide on the number of lagged features (n_lags) you want to create. For example, if n_lags=3, you will create three new columns containing the values of the original column shifted by 1, 2, and 3 time steps, respectively.
-    Call the function with the appropriate arguments.
-
+    For each data point, it generates a new feature that represents the mean of a window around the same day across all available years.
+    
     Args:
-        df is the DataFrame containing your time-series data.
-        column is the name of the column for which you want to create lagged features.
-        n_lags is the number of lagged features you want to create
+        df: DataFrame containing your time-series data.
+        column: The name of the column for which you want to create lagged features.
+        window: The size of the window around the same day in previous years to calculate the mean. 
+                For example, if window=10, it will take 5 days before and 4 days after the same day in previous years.
     """
-    for lag in range(1, n_lags + 1):
-        df[f"{column}_lag{lag}"] = df[column].shift(lag)
+    # Ensure the DataFrame is sorted by date
+    df = df.sort_values(by='date_forecast')
+    
+    # Creating new feature
+    new_column_name = f"{column}_mean_all_years_{window}d_window"
+    
+    # Initializing the new column with NaN
+    df[new_column_name] = pd.Series([None] * len(df))
+    
+    for i, row in df.iterrows():
+        # Define the window start and end dates without year to find similar days across all years
+        month_day_start = (row['date_forecast'].month, row['date_forecast'].day - window//2)
+        month_day_end = (row['date_forecast'].month, row['date_forecast'].day + (window//2)-1)
+        
+        # Filter out entries with the same day and month ignoring the year
+        mask = (df['date_forecast'].dt.month == month_day_start[0]) & (month_day_start[1] <= df['date_forecast'].dt.day) & (df['date_forecast'].dt.day <= month_day_end[1])
+        
+        # Calculate the mean value
+        mean_value = df[mask][column].mean()
+        
+        # Assign the mean value to the new feature column
+        df.at[i, new_column_name] = mean_value
+    
     return df
 
 
 def calculate_rolling_statistics(df, column, window_size):
     df[f"{column}_rolling_mean_{window_size}"] = (
         df[column].rolling(window=window_size).mean()
-    )
-    df[f"{column}_rolling_std_{window_size}"] = (
-        df[column].rolling(window=window_size).std()
     )
     return df
 
@@ -564,7 +581,7 @@ def temporal_alignment(
     return train_observed, train_estimated
 
 
-def _add_calc_date_and_correct_target(data_frame: pd.DataFrame) -> pd.DataFrame:
+def _add_date_calc_and_correct_target(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
     Add date_calc feature for each hour of the next day and now
 
