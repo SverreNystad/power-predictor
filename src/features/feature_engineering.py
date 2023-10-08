@@ -96,12 +96,6 @@ def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop("ceiling_height_agl:m", axis=1)
     df["cloud_base_agl:m"] = df["cloud_base_agl:m"].fillna(0)
     df = df.drop("elevation:m", axis=1)
-
-    # df = df.drop("wind_speed_u_10m:ms", axis=1)
-    # df = df.drop("wind_speed_10m:ms", axis=1)
-    # df = df.drop("wind_speed_v_10m:ms", axis=1)
-    # df = df.drop("wind_speed_w_1000hPa:ms", axis=1)
-
     return df
 
 
@@ -125,6 +119,10 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
             & (df["pv_measurement"] == df["pv_measurement"].shift(1))
         ].index
     )
+
+    # Remove positive pv measurements when sun_elevation is negative
+    threshold = -10
+    df = df.drop([(df["sun_elevation:d"] < threshold) & (df["pv_measurement"] > 0)].index)
     return df
 
 
