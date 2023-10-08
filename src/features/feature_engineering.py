@@ -179,6 +179,7 @@ def remove_faulty_zero_measurements_for_direct_sun_light(
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = create_time_features_from_date(data_frame)
+    data_frame = create_expected_pv_based_on_previous_years_same_day(data_frame)
     data_frame["sun_product"] = data_frame["diffuse_rad:W"] * data_frame["direct_rad:W"]
 
     # data_frame["modified_solar_elevation"] = np.where(
@@ -417,47 +418,68 @@ def trig_transform(df: pd.DataFrame, column: str, period: int):
     return df_trig
 
 
-def create_lagged_features(df: pd.DataFrame, column: str, window: int):
+def create_expected_pv_based_on_previous_years_same_day(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Creates lagged features for a given column in a DataFrame.
-    For each data point, it generates a new feature that represents the mean of a window around the same day across all available years.
+    Create a mean pv_measurement for each data point based on the previous years same day and hour
+    Add this as a feature to the data frame
+    
+    Parameters:
+        df (pd.DataFrame): DataFrame containing at least columns: 
+                           location_a, location_b, location_c, date_forecast, 
+                           pv_measurement, sin_day_of_year, cos_day_of_year, sin_hour, cos_hour
+    
+    Returns:
+        pd.DataFrame: DataFrame with additional feature of mean pv_measurement based on historical data
+    """
+    df = df.copy()
+    # When the data does not contain needed columns, return the original df.
+    if not all(
+        col in df.columns
+        for col in [
+            "location_a",
+            "location_b",
+            "location_c",
+            "date_forecast",
+            "pv_measurement",
+            "sin_day_of_year",
+            "cos_day_of_year",
+            "sin_hour",
+            "cos_hour",
+        ]
+    ):
+        return df
+    # Identify the location from the binary flags
+    df['location'] = df[['location_a', 'location_b', 'location_c']].idxmax(axis=1)
+    
+    # Calculate mean pv_measurement for each location, sin_day_of_year, cos_day_of_year, sin_hour, and cos_hour
+    mean_pv = df.groupby(['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'])['pv_measurement'].mean().reset_index()
+    mean_pv.rename(columns={'pv_measurement': 'mean_pv_measurement'}, inplace=True)
+    
+    # Merge mean_pv_measurement back to the original DataFrame
+    df = pd.merge(df, mean_pv, on=['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'], how='left')
+    df.drop(columns=['location'], inplace=True)
+    return df
+
+
+def create_simple_rolling_mean(df: pd.DataFrame, column: str, window: int) -> pd.DataFrame:
+    """
+    Creates a simple rolling mean feature for a given column in a DataFrame.
     
     Args:
         df: DataFrame containing your time-series data.
         column: The name of the column for which you want to create lagged features.
-        window: The size of the window around the same day in previous years to calculate the mean. 
-                For example, if window=10, it will take 5 days before and 4 days after the same day in previous years.
+        window: The size of the window for calculating the rolling mean. 
+                For example, if window=10, it will take the previous 10 days.
     """
     # Ensure the DataFrame is sorted by date
     df = df.sort_values(by='date_forecast')
     
-    # Creating new feature
-    new_column_name = f"{column}_mean_all_years_{window}d_window"
+    # Ensure 'date_forecast' is in datetime format
+    df['date_forecast'] = pd.to_datetime(df['date_forecast'])
     
-    # Initializing the new column with NaN
-    df[new_column_name] = pd.Series([None] * len(df))
+    # Calculate the rolling mean
+    df['rolling_mean_of_' + column] = df[column].rolling(window=window).mean()
     
-    for i, row in df.iterrows():
-        # Define the window start and end dates without year to find similar days across all years
-        month_day_start = (row['date_forecast'].month, row['date_forecast'].day - window//2)
-        month_day_end = (row['date_forecast'].month, row['date_forecast'].day + (window//2)-1)
-        
-        # Filter out entries with the same day and month ignoring the year
-        mask = (df['date_forecast'].dt.month == month_day_start[0]) & (month_day_start[1] <= df['date_forecast'].dt.day) & (df['date_forecast'].dt.day <= month_day_end[1])
-        
-        # Calculate the mean value
-        mean_value = df[mask][column].mean()
-        
-        # Assign the mean value to the new feature column
-        df.at[i, new_column_name] = mean_value
-    
-    return df
-
-
-def calculate_rolling_statistics(df, column, window_size):
-    df[f"{column}_rolling_mean_{window_size}"] = (
-        df[column].rolling(window=window_size).mean()
-    )
     return df
 
 
