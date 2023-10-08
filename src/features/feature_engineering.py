@@ -439,7 +439,6 @@ def create_expected_pv_based_on_previous_years_same_day(df: pd.DataFrame) -> pd.
             "location_a",
             "location_b",
             "location_c",
-            "date_forecast",
             "pv_measurement",
             "sin_day_of_year",
             "cos_day_of_year",

@@ -219,9 +219,9 @@ def get_preprocessed_test_data_with_time(
         _,
         _,
         _,
-        _,
-        _,
-        _,
+        X_train_observed_a,
+        X_train_observed_b,
+        X_train_observed_c,
         X_test_estimated_a,
         X_test_estimated_b,
         X_test_estimated_c,
@@ -230,10 +230,18 @@ def get_preprocessed_test_data_with_time(
     X_test_estimated_a = remove_missing_features(X_test_estimated_a)
     X_test_estimated_b = remove_missing_features(X_test_estimated_b)
     X_test_estimated_c = remove_missing_features(X_test_estimated_c)
-    
+
+
     X_test_a_correct_features = feature_engineer(X_test_estimated_a)
     X_test_b_correct_features = feature_engineer(X_test_estimated_b)
     X_test_c_correct_features = feature_engineer(X_test_estimated_c)
+    
+    # Add historical data so that the model can use it for prediction
+    # Add mean_pv_measurement with same day and hour from previous years
+    X_test_a_correct_features = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_observed_a)
+    X_test_b_correct_features = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_observed_b)
+    X_test_c_correct_features = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_observed_c)
+
 
     X_test_estimated_a_processed = X_test_a_correct_features.drop(columns=["date_calc"])
     X_test_estimated_b_processed = X_test_b_correct_features.drop(columns=["date_calc"])
@@ -249,6 +257,34 @@ def get_preprocessed_test_data_with_time(
         X_test_estimated_c_processed,
     )
 
+def add_expected_pv_to_test_data(test_df: pd.DataFrame, train_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add a precomputed mean_pv_measurement from the training data to the test data based on 
+    'location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', and 'cos_hour'.
+    
+    Parameters:
+        test_df (pd.DataFrame): Test DataFrame without mean_pv_measurement but with other features.
+        train_df (pd.DataFrame): Training DataFrame with precomputed mean_pv_measurement and other features.
+    
+    Returns:
+        pd.DataFrame: Test DataFrame with mean_pv_measurement feature added from training data.
+    """
+    test_df = test_df.copy()
+    
+    # Identify the location from the binary flags in the training data if not already done
+    if 'location' not in train_df.columns:
+        train_df['location'] = train_df[['location_a', 'location_b', 'location_c']].idxmax(axis=1)
+    
+    # Identify the location from the binary flags in the test data if not already done
+    if 'location' not in test_df.columns:
+        test_df['location'] = test_df[['location_a', 'location_b', 'location_c']].idxmax(axis=1)
+    
+    # Merge mean_pv_measurement from training data to the test DataFrame
+    test_df = pd.merge(test_df, train_df[['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour', 'mean_pv_measurement']], 
+                       on=['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'], 
+                       how='left')
+    
+    return test_df
 
 def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
@@ -261,9 +297,9 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
         _,
         _,
         _,
-        _,
-        _,
-        _,
+        X_train_observed_a,
+        X_train_observed_b,
+        X_train_observed_c,
         X_test_estimated_a,
         X_test_estimated_b,
         X_test_estimated_c,
@@ -279,6 +315,13 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
     X_test_estimated_b = add_location(X_test_estimated_b, "b")
 
     X_test_estimated_c = add_location(X_test_estimated_c, "c")
+
+    
+    # Add historical data so that the model can use it for prediction
+    # Add mean_pv_measurement with same day and hour from previous years
+    X_test_a_correct_features = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_observed_a)
+    X_test_b_correct_features = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_observed_b)
+    X_test_c_correct_features = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_observed_c)
 
     X_test_a_correct_features = feature_engineer(X_test_estimated_a)
     X_test_b_correct_features = feature_engineer(X_test_estimated_b)
