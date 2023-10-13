@@ -104,7 +104,7 @@ def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     df = remove_night_light_discrepancies(df)
     df = remove_zero_value_discrepancies(df)
     df = remove_faulty_zero_measurements_for_direct_sun_light(df)
-    df = remove_outliers(df)
+    # df = remove_outliers(df)
     return df
 
 
