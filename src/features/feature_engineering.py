@@ -142,8 +142,8 @@ def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
         IQR = Q3 - Q1
         
         # Define outlier bounds
-        lower_bound = Q1 - 1.5 * IQR
-        upper_bound = Q3 + 1.5 * IQR
+        lower_bound = Q1 - 4 * IQR
+        upper_bound = Q3 + 4 * IQR
         
         # Filter the data
         df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
