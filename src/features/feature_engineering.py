@@ -128,8 +128,7 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
 
 
 
-def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
-
+def remove_outliers(df: pd.DataFrame, lower_bound: float = 0.1, upper_bound: float = 0.9) -> pd.DataFrame:
     '''
     Removing outliers using IQR method
     '''
@@ -137,8 +136,8 @@ def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
     columns_to_check = [col for col in df.columns if col != "pv_measurement"]
     for col in columns_to_check:
         # Calculate IQR
-        Q1 = df[col].quantile(0.25)
-        Q3 = df[col].quantile(0.75)
+        Q1 = df[col].quantile(lower_bound)
+        Q3 = df[col].quantile(upper_bound)
         IQR = Q3 - Q1
         
         # Define outlier bounds
