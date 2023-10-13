@@ -179,7 +179,7 @@ def remove_faulty_zero_measurements_for_direct_sun_light(
 
 def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = create_time_features_from_date(data_frame)
-    data_frame = create_expected_pv_based_on_previous_years_same_day(data_frame)
+    # data_frame = create_expected_pv_based_on_previous_years_same_day(data_frame)
     data_frame["sun_product"] = data_frame["diffuse_rad:W"] * data_frame["direct_rad:W"]
 
     # data_frame["modified_solar_elevation"] = np.where(
@@ -349,10 +349,12 @@ def create_time_features_from_date(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_sin_hour(date: datetime) -> float:
+    HOURS_OF_DAY = 24
     return math.sin(2 * math.pi * (date.hour) / 24)
 
 
 def get_cos_hour(date: datetime) -> float:
+    HOURS_OF_DAY = 24
     return math.cos(2 * math.pi * (date.hour) / 24)
 
 
