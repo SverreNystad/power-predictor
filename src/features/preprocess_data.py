@@ -239,17 +239,17 @@ def get_preprocessed_test_data_with_time(
     X_test_b_correct_features = feature_engineer(X_test_estimated_b)
     X_test_c_correct_features = feature_engineer(X_test_estimated_c)
     
-    X_train_obs_combined, X_val_obs_combined, y_train_obs_combined, y_val_obs_combined, X_train_est_combined, X_val_est_combined, y_train_est_combined, y_val_est_combined = fetch_preprocessed_data()
+    # X_train_obs_combined, X_val_obs_combined, y_train_obs_combined, y_val_obs_combined, X_train_est_combined, X_val_est_combined, y_train_est_combined, y_val_est_combined = fetch_preprocessed_data()
     
-    # Add historical data so that the model can use it for prediction
-    # Add mean_pv_measurement with same day and hour from previous years
-    X_test_estimated_a_with_historical_data = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_obs_combined)
-    X_test_estimated_b_with_historical_data = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_obs_combined)
-    X_test_estimated_c_with_historical_data = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_obs_combined)
+    # # Add historical data so that the model can use it for prediction
+    # # Add mean_pv_measurement with same day and hour from previous years
+    # X_test_estimated_a_with_historical_data = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_obs_combined)
+    # X_test_estimated_b_with_historical_data = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_obs_combined)
+    # X_test_estimated_c_with_historical_data = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_obs_combined)
     
-    X_test_estimated_a_processed = X_test_estimated_a_with_historical_data.drop(columns=["date_calc"], errors='ignore')
-    X_test_estimated_b_processed = X_test_estimated_b_with_historical_data.drop(columns=["date_calc"], errors='ignore')
-    X_test_estimated_c_processed = X_test_estimated_c_with_historical_data.drop(columns=["date_calc"], errors='ignore')
+    X_test_estimated_a_processed = X_test_a_correct_features.drop(columns=["date_calc"], errors='ignore')
+    X_test_estimated_b_processed = X_test_b_correct_features.drop(columns=["date_calc"], errors='ignore')
+    X_test_estimated_c_processed = X_test_c_correct_features.drop(columns=["date_calc"], errors='ignore')
 
     # Handle NaN values in the test data by filling them with the mean value of the respective column from the training data
     X_test_estimated_a_processed.fillna(fill, inplace=True)
@@ -261,52 +261,52 @@ def get_preprocessed_test_data_with_time(
         X_test_estimated_c_processed,
     )
 
-def add_expected_pv_to_test_data(test_df: pd.DataFrame, train_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Add a precomputed mean_pv_measurement from the training data to the test data based on 
-    'location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', and 'cos_hour'.
+# def add_expected_pv_to_test_data(test_df: pd.DataFrame, train_df: pd.DataFrame) -> pd.DataFrame:
+#     """
+#     Add a precomputed mean_pv_measurement from the training data to the test data based on 
+#     'location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', and 'cos_hour'.
     
-    Parameters:
-        test_df (pd.DataFrame): Test DataFrame without mean_pv_measurement but with other features.
-        train_df (pd.DataFrame): Training DataFrame with precomputed mean_pv_measurement and other features.
+#     Parameters:
+#         test_df (pd.DataFrame): Test DataFrame without mean_pv_measurement but with other features.
+#         train_df (pd.DataFrame): Training DataFrame with precomputed mean_pv_measurement and other features.
     
-    Returns:
-        pd.DataFrame: Test DataFrame with mean_pv_measurement feature added from training data.
-    """
-    test_df = test_df.copy()
+#     Returns:
+#         pd.DataFrame: Test DataFrame with mean_pv_measurement feature added from training data.
+#     """
+#     test_df = test_df.copy()
     
-    # Identify the location from the binary flags in the training data if not already done
-    if 'location' not in train_df.columns:
-        train_df['location'] = train_df[['location_a', 'location_b', 'location_c']].idxmax(axis=1)
+#     # Identify the location from the binary flags in the training data if not already done
+#     if 'location' not in train_df.columns:
+#         train_df['location'] = train_df[['location_a', 'location_b', 'location_c']].idxmax(axis=1)
     
-    # Identify the location from the binary flags in the test data if not already done
-    if 'location' not in test_df.columns:
-        test_df['location'] = test_df[['location_a', 'location_b', 'location_c']].idxmax(axis=1)
+#     # Identify the location from the binary flags in the test data if not already done
+#     if 'location' not in test_df.columns:
+#         test_df['location'] = test_df[['location_a', 'location_b', 'location_c']].idxmax(axis=1)
     
-    # Merge mean_pv_measurement from training data to the test DataFrame
-    test_df = pd.merge(test_df, train_df[['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour', 'mean_pv_measurement']], 
-                       on=['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'], 
-                       how='left')
+#     # Merge mean_pv_measurement from training data to the test DataFrame
+#     test_df = pd.merge(test_df, train_df[['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour', 'mean_pv_measurement']], 
+#                        on=['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'], 
+#                        how='left')
     
-    # Ensure that test_df has the same feature order as train_df
-    train_columns = train_df.columns.tolist()
+#     # Ensure that test_df has the same feature order as train_df
+#     train_columns = train_df.columns.tolist()
     
-    print(f"Shapes: train_df={train_df.shape}, test_df={test_df.shape}")
-    original_test_columns = test_df.copy()
-    # If 'mean_pv_measurement' is in train_df columns, reorder test_df accordingly
-    if 'mean_pv_measurement' in train_columns:
-        # Ensure all columns in train_columns exist in test_df before reordering
-        existing_columns = [col for col in train_columns if col in test_df.columns]
-        # Add all the columns from are in test_df but not in train_df to the end of the DataFrame
-        additional_columns = [col for col in test_df.columns if col not in train_columns]
-        test_df = test_df[existing_columns + additional_columns]
-    print(f"Shapes after reordering: train_df={train_df.shape}, test_df={test_df.shape}")
+#     print(f"Shapes: train_df={train_df.shape}, test_df={test_df.shape}")
+#     original_test_columns = test_df.copy()
+#     # If 'mean_pv_measurement' is in train_df columns, reorder test_df accordingly
+#     if 'mean_pv_measurement' in train_columns:
+#         # Ensure all columns in train_columns exist in test_df before reordering
+#         existing_columns = [col for col in train_columns if col in test_df.columns]
+#         # Add all the columns from are in test_df but not in train_df to the end of the DataFrame
+#         additional_columns = [col for col in test_df.columns if col not in train_columns]
+#         test_df = test_df[existing_columns + additional_columns]
+#     print(f"Shapes after reordering: train_df={train_df.shape}, test_df={test_df.shape}")
 
 
-    # Drop the 'location' column from the test data
-    test_df.drop(columns=['location'], inplace=True)
+    # # Drop the 'location' column from the test data
+    # test_df.drop(columns=['location'], inplace=True)
 
-    return test_df
+    # return test_df
 
 def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
@@ -340,22 +340,22 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
     X_test_b_correct_features = feature_engineer(X_test_estimated_b)
     X_test_c_correct_features = feature_engineer(X_test_estimated_c)
 
-    X_train_obs_combined, X_val_obs_combined, y_train_obs_combined, y_val_obs_combined, X_train_est_combined, X_val_est_combined, y_train_est_combined, y_val_est_combined = fetch_preprocessed_data()
+    # X_train_obs_combined, X_val_obs_combined, y_train_obs_combined, y_val_obs_combined, X_train_est_combined, X_val_est_combined, y_train_est_combined, y_val_est_combined = fetch_preprocessed_data()
     
-    # Add historical data so that the model can use it for prediction
-    # Add mean_pv_measurement with same day and hour from previous years
-    X_test_estimated_a_with_historical_data = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_obs_combined)
-    X_test_estimated_b_with_historical_data = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_obs_combined)
-    X_test_estimated_c_with_historical_data = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_obs_combined)
+    # # Add historical data so that the model can use it for prediction
+    # # Add mean_pv_measurement with same day and hour from previous years
+    # X_test_estimated_a_with_historical_data = add_expected_pv_to_test_data(X_test_a_correct_features, X_train_obs_combined)
+    # X_test_estimated_b_with_historical_data = add_expected_pv_to_test_data(X_test_b_correct_features, X_train_obs_combined)
+    # X_test_estimated_c_with_historical_data = add_expected_pv_to_test_data(X_test_c_correct_features, X_train_obs_combined)
 
     # Drop the 'date_calc' and 'date_forecast' columns from the test data
-    X_test_estimated_a_processed = X_test_estimated_a_with_historical_data.drop(
+    X_test_estimated_a_processed = X_test_a_correct_features.drop(
         columns=["date_calc", "date_forecast"], errors='ignore'
     )
-    X_test_estimated_b_processed = X_test_estimated_b_with_historical_data.drop(
+    X_test_estimated_b_processed = X_test_b_correct_features.drop(
         columns=["date_calc", "date_forecast"], errors='ignore'
     )
-    X_test_estimated_c_processed = X_test_estimated_c_with_historical_data.drop(
+    X_test_estimated_c_processed = X_test_c_correct_features.drop(
         columns=["date_calc", "date_forecast"], errors='ignore'
     )
 

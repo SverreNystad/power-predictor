@@ -62,12 +62,12 @@ def prepare_data(
 
     # Split the data into features (X) and target (y)
     X_obs = train_observed_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast"]
+        columns=["time", "pv_measurement", "date_forecast", "date_calc"] , errors="ignore"
     )
     y_obs = train_observed_clean["pv_measurement"]
 
     X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast"]
+        columns=["time", "pv_measurement", "date_forecast", "date_calc"], errors="ignore"
     )
     y_est = train_estimated_clean["pv_measurement"]
 
