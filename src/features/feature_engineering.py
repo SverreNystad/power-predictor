@@ -126,6 +126,29 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+
+def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
+
+    '''
+    Removing outliers using IQR method
+    '''
+
+    columns_to_check = [col for col in df.columns if col != "pv_measurement"]
+    for col in columns_to_check:
+        # Calculate IQR
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        
+        # Define outlier bounds
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        
+        # Filter the data
+        df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
+    
+    return df
+
 def remove_night_light_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
 
