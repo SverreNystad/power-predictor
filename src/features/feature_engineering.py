@@ -240,6 +240,9 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     # data_frame["sun_addition"] = (
     #     data_frame["direct_rad_1h:J"] + data_frame["diffuse_rad_1h:J"]
     # )
+    
+    # Create a feature that is precip_5min:mm * precip_type_5min.idx 
+    data_frame["any_precip"] = data_frame['precip_5min:mm'] * data_frame['precip_type_5min:idx']
 
     data_frame["sun_addition"] = (
         data_frame["diffuse_rad:W"] + data_frame["direct_rad:W"]
