@@ -196,11 +196,11 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["direct_rad_1h:J"] / data_frame["clear_sky_energy_1h:J"],
     )
 
-    data_frame["residual_radiation"] = (
-        data_frame["clear_sky_rad:W"]
-        - data_frame["direct_rad:W"]
-        - data_frame["diffuse_rad:W"]
-    )
+    # data_frame["residual_radiation"] = (
+    #     data_frame["clear_sky_rad:W"]
+    #     - data_frame["direct_rad:W"]
+    #     - data_frame["diffuse_rad:W"]
+    # )
 
     # WAS WORSE
     # data_frame["effective_radiation2"] = np.where(

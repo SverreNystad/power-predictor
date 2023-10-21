@@ -8,3 +8,5 @@
 
 
 # Radiation data :W is much more important than 1h. Might be that there is something wrong about the 1h data
+
+# Sun product gives better performance
