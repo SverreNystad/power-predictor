@@ -67,7 +67,7 @@ def prepare_data(
     y_obs = train_observed_clean["pv_measurement"]
 
     X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast", "date_calc"], errors="ignore"
+        columns=["time", "pv_measurement", "date_forecast", "date_calc"]
     )
     y_est = train_estimated_clean["pv_measurement"]
 
@@ -205,12 +205,12 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     # data_frame = create_expected_pv_based_on_previous_years_same_day(data_frame)
     data_frame["sun_product"] = data_frame["diffuse_rad:W"] * data_frame["direct_rad:W"]
 
-    # data_frame["modified_solar_elevation"] = np.where(
-    #     data_frame["sun_elevation:d"] <= 0,
-    #     0,
-    #     np.sin(np.radians(data_frame["sun_elevation:d"])),
-    # )
-    # data_frame = data_frame.drop("sun_elevation:d", axis=1)
+    data_frame["modified_solar_elevation"] = np.where(
+        data_frame["sun_elevation:d"] <= 0,
+        0,
+        np.sin(np.radians(data_frame["sun_elevation:d"])),
+    )
+    data_frame = data_frame.drop("sun_elevation:d", axis=1)
 
     data_frame["effective_radiation"] = np.where(
         data_frame["clear_sky_energy_1h:J"] == 0,
@@ -263,6 +263,11 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     #     data_frame["direct_rad_1h:J"] + data_frame["diffuse_rad_1h:J"]
     # )
 
+    # Create a feature that is precip_5min:mm * precip_type_5min.idx
+    # data_frame["any_precip"] = (
+    #     data_frame["precip_5min:mm"] * data_frame["precip_type_5min:idx"]
+    # )
+
     data_frame["sun_addition"] = (
         data_frame["diffuse_rad:W"] + data_frame["direct_rad:W"]
     )
@@ -281,6 +286,10 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = data_frame.drop("fresh_snow_3h:cm", axis=1)
     data_frame = data_frame.drop("fresh_snow_6h:cm", axis=1)
     data_frame = data_frame.drop("snow_melt_10min:mm", axis=1)
+
+    data_frame = data_frame.drop("msl_pressure:hPa", axis=1)
+    data_frame = data_frame.drop("pressure_100m:hPa", axis=1)
+    data_frame = data_frame.drop("sfc_pressure:hPa", axis=1)
 
     return data_frame
 
