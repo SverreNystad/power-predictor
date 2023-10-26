@@ -1,0 +1,20 @@
+{
+    "name": "Ensemble",
+    "ml_task": "regression",
+    "optimize_metric": "mae",
+    "selected_models": [
+        {
+            "model": "23_CatBoost_GoldenFeatures",
+            "repeat": 2.0
+        },
+        {
+            "model": "4_Default_LightGBM",
+            "repeat": 4.0
+        }
+    ],
+    "predictions_fname": "Ensemble/predictions_ensemble.csv",
+    "metric_name": "mae",
+    "final_loss": 72.74943514212293,
+    "train_time": 0.1715090274810791,
+    "is_stacked": false
+}

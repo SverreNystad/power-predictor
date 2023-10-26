@@ -1,0 +1,18 @@
+name,model_type,metric_type,metric_value,train_time
+1_DecisionTree,Decision Tree,mae,116.68788289640084,4.1
+2_DecisionTree,Decision Tree,mae,184.62763435845144,2.67
+3_DecisionTree,Decision Tree,mae,184.62763435845142,2.64
+4_Default_LightGBM,LightGBM,mae,74.07701818597604,326.28
+14_LightGBM,LightGBM,mae,82.61508550590584,33.65
+5_Xgboost,Xgboost,mae,85.69201511856825,10.32
+23_CatBoost,CatBoost,mae,81.78783221059098,80.81
+32_RandomForest,Random Forest,mae,113.82500271193052,78.16
+41_ExtraTrees,Extra Trees,mae,114.41622786055369,11.26
+50_NeuralNetwork,Neural Network,mae,125.89787153788947,51.84
+23_CatBoost_GoldenFeatures,CatBoost,mae,78.23888114897778,252.61
+51_LightGBM,LightGBM,mae,74.07701818597604,303.06
+Ensemble,Ensemble,mae,72.74943514212293,0.17
+4_Default_LightGBM_Stacked,LightGBM,mae,72.96451745031449,18.15
+23_CatBoost_GoldenFeatures_Stacked,CatBoost,mae,73.15207362257394,8.43
+5_Xgboost_Stacked,Xgboost,mae,72.51162638987418,6.32
+Ensemble_Stacked,Ensemble,mae,71.40219382756,0.26

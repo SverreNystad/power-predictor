@@ -1,0 +1,1509 @@
+{
+    "uid": "6a160449-f249-45a0-a914-422b81a5c5ca",
+    "name": "50_NeuralNetwork",
+    "preprocessing": [
+        {
+            "scale": [
+                {
+                    "scale": [
+                        2.73248913865254,
+                        0.036466772688888524,
+                        846734.2665709223,
+                        235.64338552755513,
+                        1790.135019928303,
+                        6.773757353581566,
+                        61.83698710347891,
+                        220303.3903967054,
+                        116.24884963769625,
+                        413104.70174770313,
+                        34.03278373316586,
+                        0.48366053526013997,
+                        12.857777346035398,
+                        12.782854055120183,
+                        12.837909003491234,
+                        5.255954346174578,
+                        14.190438633614061,
+                        12.895055297669822,
+                        98.24054342411958,
+                        24.270693801646456,
+                        6.551496879858638,
+                        33.712540300737125,
+                        17976.45821016152,
+                        1.7356974791585016,
+                        2.744739486107207,
+                        1.8817969553655909,
+                        14890.042571988326,
+                        0.23086460943771217,
+                        0.3960904425789575,
+                        160.17829135376527
+                    ],
+                    "mean": [
+                        6.250335443318688,
+                        1.2522029606802985,
+                        539166.4517276045,
+                        149.566460598814,
+                        1632.308478992939,
+                        275.84236475645196,
+                        40.21816176409362,
+                        145101.92737533094,
+                        52.49045023684496,
+                        189069.73217771688,
+                        66.96438714518854,
+                        0.5633609150644926,
+                        1009.2497682971386,
+                        995.5724539679952,
+                        1001.6885434847984,
+                        0.7377249130560172,
+                        73.9545558486608,
+                        1007.8317518380163,
+                        179.70801743497097,
+                        -0.6916051134361957,
+                        279.9986480155865,
+                        73.7747724746383,
+                        32956.79268051077,
+                        3.005810415344812,
+                        0.7110391821067953,
+                        0.6554360338814096,
+                        6270.807920252858,
+                        0.8635999002624546,
+                        0.8051431816338119,
+                        92.70861199928216
+                    ],
+                    "var": [
+                        7.466496892854099,
+                        0.0013298255103430662,
+                        716958918185.3978,
+                        55527.80514288798,
+                        3204583.389573706,
+                        45.88378868520034,
+                        3823.812974035817,
+                        48533583820.28318,
+                        13513.795042087711,
+                        170655494606.05878,
+                        1158.2303686284386,
+                        0.23392751336812512,
+                        165.3224382802211,
+                        163.4013577945025,
+                        164.81190758192128,
+                        27.625056089071435,
+                        201.3685486143665,
+                        166.28245112996257,
+                        9651.204372266326,
+                        589.0665776132796,
+                        42.922111366797466,
+                        1136.535373528825,
+                        323153049.7816835,
+                        3.012645739157177,
+                        7.533594846596054,
+                        3.541159781223208,
+                        221713367.7956247,
+                        0.05329846789082738,
+                        0.15688763870239442,
+                        25657.085021011713
+                    ],
+                    "n_samples_seen": 61635,
+                    "n_features_in": 30,
+                    "columns": [
+                        "absolute_humidity_2m:gm3",
+                        "air_density_2m:kgm3",
+                        "clear_sky_energy_1h:J",
+                        "clear_sky_rad:W",
+                        "cloud_base_agl:m",
+                        "dew_point_2m:K",
+                        "diffuse_rad:W",
+                        "diffuse_rad_1h:J",
+                        "direct_rad:W",
+                        "direct_rad_1h:J",
+                        "effective_cloud_cover:p",
+                        "is_in_shadow:idx",
+                        "msl_pressure:hPa",
+                        "pressure_100m:hPa",
+                        "pressure_50m:hPa",
+                        "prob_rime:p",
+                        "relative_humidity_1000hPa:p",
+                        "sfc_pressure:hPa",
+                        "sun_azimuth:d",
+                        "sun_elevation:d",
+                        "t_1000hPa:K",
+                        "total_cloud_cover:p",
+                        "visibility:m",
+                        "wind_speed_10m:ms",
+                        "wind_speed_u_10m:ms",
+                        "wind_speed_v_10m:ms",
+                        "sun_product",
+                        "cloud_ratio",
+                        "cloud_cover_over_30%",
+                        "sun_addition"
+                    ],
+                    "scale_method": "scale_normal"
+                }
+            ],
+            "scale_y": {
+                "scale": [
+                    812.519618465985
+                ],
+                "mean": [
+                    320.7768144317352
+                ],
+                "var": [
+                    660188.1303921097
+                ],
+                "n_samples_seen": 61635,
+                "n_features_in": 1,
+                "columns": [
+                    "target"
+                ],
+                "scale_method": "scale_normal"
+            },
+            "ml_task": "regression",
+            "params": {
+                "columns_preprocessing": {
+                    "absolute_humidity_2m:gm3": [
+                        "scale_normal"
+                    ],
+                    "air_density_2m:kgm3": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_energy_1h:J": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_rad:W": [
+                        "scale_normal"
+                    ],
+                    "cloud_base_agl:m": [
+                        "scale_normal"
+                    ],
+                    "dew_point_2m:K": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad:W": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "direct_rad:W": [
+                        "scale_normal"
+                    ],
+                    "direct_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "effective_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "is_in_shadow:idx": [
+                        "scale_normal"
+                    ],
+                    "msl_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_100m:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_50m:hPa": [
+                        "scale_normal"
+                    ],
+                    "prob_rime:p": [
+                        "scale_normal"
+                    ],
+                    "relative_humidity_1000hPa:p": [
+                        "scale_normal"
+                    ],
+                    "sfc_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "sun_azimuth:d": [
+                        "scale_normal"
+                    ],
+                    "sun_elevation:d": [
+                        "scale_normal"
+                    ],
+                    "t_1000hPa:K": [
+                        "scale_normal"
+                    ],
+                    "total_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "visibility:m": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_u_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_v_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "sun_product": [
+                        "scale_normal"
+                    ],
+                    "cloud_ratio": [
+                        "scale_normal"
+                    ],
+                    "cloud_cover_over_30%": [
+                        "scale_normal"
+                    ],
+                    "sun_addition": [
+                        "scale_normal"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "scale_normal"
+                ],
+                "ml_task": "regression"
+            }
+        },
+        {
+            "scale": [
+                {
+                    "scale": [
+                        2.7281371107292736,
+                        0.036478155430881544,
+                        842831.4038110671,
+                        234.7740006640191,
+                        1797.4234482726467,
+                        6.777492234299092,
+                        61.52210535799168,
+                        218829.01436507568,
+                        116.3676804084456,
+                        413373.4025136155,
+                        34.014617871032705,
+                        0.48325862277957765,
+                        12.904090950483033,
+                        12.826207292803073,
+                        12.881328906945177,
+                        5.236197559849261,
+                        14.202469594821562,
+                        12.93871836703342,
+                        98.40953292945832,
+                        24.241384920742792,
+                        6.54954468921369,
+                        33.709068343810934,
+                        17982.036545631618,
+                        1.7422043785877097,
+                        2.7531597128551404,
+                        1.887261014174897,
+                        14821.162314852321,
+                        0.230439531923708,
+                        0.3963152565549315,
+                        159.99500499985834
+                    ],
+                    "mean": [
+                        6.231972906458375,
+                        1.2523710146566913,
+                        534513.5118304039,
+                        148.4772102205225,
+                        1640.7018555177065,
+                        275.7971250129131,
+                        39.89602295900789,
+                        143782.3436685977,
+                        52.37378761885455,
+                        188436.72961032885,
+                        66.89023284207414,
+                        0.5658351585949541,
+                        1009.2409702459778,
+                        995.565681519535,
+                        1001.6824479081504,
+                        0.7370345583381533,
+                        73.88693112874444,
+                        1007.8264236753465,
+                        179.85758505124406,
+                        -0.7991463849504296,
+                        279.96789841226797,
+                        73.69244059597449,
+                        33048.34953373389,
+                        3.0157812113742426,
+                        0.7083588868240881,
+                        0.6700060835353099,
+                        6225.50340307206,
+                        0.8640194262404739,
+                        0.8048511397744788,
+                        92.2698105768581
+                    ],
+                    "var": [
+                        7.442732094938269,
+                        0.0013306558236395529,
+                        710364775250.134,
+                        55118.83138778884,
+                        3230731.052400332,
+                        45.93440098598449,
+                        3784.9694476798286,
+                        47886137527.9905,
+                        13541.437043642134,
+                        170877569905.68356,
+                        1156.9942289123774,
+                        0.2335388964908141,
+                        166.51556325833812,
+                        164.5115935179547,
+                        165.92863440890142,
+                        27.41776488577136,
+                        201.71014259183093,
+                        167.41043298140798,
+                        9684.436171394142,
+                        587.644742875616,
+                        42.89653563600725,
+                        1136.3012886077165,
+                        323353638.3284311,
+                        3.0352760967701875,
+                        7.579888404488599,
+                        3.5617541356244606,
+                        219666852.36319864,
+                        0.05310237787321764,
+                        0.15706578257820117,
+                        25598.401624904694
+                    ],
+                    "n_samples_seen": 61635,
+                    "n_features_in": 30,
+                    "columns": [
+                        "absolute_humidity_2m:gm3",
+                        "air_density_2m:kgm3",
+                        "clear_sky_energy_1h:J",
+                        "clear_sky_rad:W",
+                        "cloud_base_agl:m",
+                        "dew_point_2m:K",
+                        "diffuse_rad:W",
+                        "diffuse_rad_1h:J",
+                        "direct_rad:W",
+                        "direct_rad_1h:J",
+                        "effective_cloud_cover:p",
+                        "is_in_shadow:idx",
+                        "msl_pressure:hPa",
+                        "pressure_100m:hPa",
+                        "pressure_50m:hPa",
+                        "prob_rime:p",
+                        "relative_humidity_1000hPa:p",
+                        "sfc_pressure:hPa",
+                        "sun_azimuth:d",
+                        "sun_elevation:d",
+                        "t_1000hPa:K",
+                        "total_cloud_cover:p",
+                        "visibility:m",
+                        "wind_speed_10m:ms",
+                        "wind_speed_u_10m:ms",
+                        "wind_speed_v_10m:ms",
+                        "sun_product",
+                        "cloud_ratio",
+                        "cloud_cover_over_30%",
+                        "sun_addition"
+                    ],
+                    "scale_method": "scale_normal"
+                }
+            ],
+            "scale_y": {
+                "scale": [
+                    809.7436346957782
+                ],
+                "mean": [
+                    318.54968836699936
+                ],
+                "var": [
+                    655684.7539303298
+                ],
+                "n_samples_seen": 61635,
+                "n_features_in": 1,
+                "columns": [
+                    "target"
+                ],
+                "scale_method": "scale_normal"
+            },
+            "ml_task": "regression",
+            "params": {
+                "columns_preprocessing": {
+                    "absolute_humidity_2m:gm3": [
+                        "scale_normal"
+                    ],
+                    "air_density_2m:kgm3": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_energy_1h:J": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_rad:W": [
+                        "scale_normal"
+                    ],
+                    "cloud_base_agl:m": [
+                        "scale_normal"
+                    ],
+                    "dew_point_2m:K": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad:W": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "direct_rad:W": [
+                        "scale_normal"
+                    ],
+                    "direct_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "effective_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "is_in_shadow:idx": [
+                        "scale_normal"
+                    ],
+                    "msl_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_100m:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_50m:hPa": [
+                        "scale_normal"
+                    ],
+                    "prob_rime:p": [
+                        "scale_normal"
+                    ],
+                    "relative_humidity_1000hPa:p": [
+                        "scale_normal"
+                    ],
+                    "sfc_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "sun_azimuth:d": [
+                        "scale_normal"
+                    ],
+                    "sun_elevation:d": [
+                        "scale_normal"
+                    ],
+                    "t_1000hPa:K": [
+                        "scale_normal"
+                    ],
+                    "total_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "visibility:m": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_u_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_v_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "sun_product": [
+                        "scale_normal"
+                    ],
+                    "cloud_ratio": [
+                        "scale_normal"
+                    ],
+                    "cloud_cover_over_30%": [
+                        "scale_normal"
+                    ],
+                    "sun_addition": [
+                        "scale_normal"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "scale_normal"
+                ],
+                "ml_task": "regression"
+            }
+        },
+        {
+            "scale": [
+                {
+                    "scale": [
+                        2.73370941441902,
+                        0.03651018097367697,
+                        840590.9338630507,
+                        234.09176160418096,
+                        1796.1325949284537,
+                        6.781986264710373,
+                        61.4402185868306,
+                        218585.13989225417,
+                        115.54936884922748,
+                        410587.13231304055,
+                        33.982464118836276,
+                        0.4834325403950582,
+                        12.829071205685475,
+                        12.753417973191022,
+                        12.808218164113041,
+                        5.307944617212863,
+                        14.187253950594155,
+                        12.865158621956253,
+                        98.4703128824006,
+                        24.21319705604365,
+                        6.563326994419011,
+                        33.68156066770826,
+                        18003.449780343355,
+                        1.7469666739300536,
+                        2.753730731543791,
+                        1.884951366046975,
+                        14776.005590202474,
+                        0.23022061680395922,
+                        0.39594037600828424,
+                        159.27054729399484
+                    ],
+                    "mean": [
+                        6.2419461354563746,
+                        1.2523623913968964,
+                        533689.3857953092,
+                        148.19223288020498,
+                        1641.0760126205028,
+                        275.819331956871,
+                        39.890687120160514,
+                        143755.42689585674,
+                        52.02165814129837,
+                        187315.0713068539,
+                        66.90541091118995,
+                        0.565100997809686,
+                        1009.2762672120429,
+                        995.5982510602995,
+                        1001.7150073580859,
+                        0.7605041777993872,
+                        73.9375480517241,
+                        1007.8589031383805,
+                        179.5416904034479,
+                        -0.7990715579309341,
+                        279.98262260773083,
+                        73.7146017073776,
+                        32964.503495339115,
+                        3.0141680854187656,
+                        0.7184055323114992,
+                        0.668699601661815,
+                        6195.454744672633,
+                        0.8642365157604217,
+                        0.8053378762067007,
+                        91.91234528200661
+                    ],
+                    "var": [
+                        7.473167162483182,
+                        0.0013329933147306437,
+                        706593118092.7556,
+                        54798.95285094869,
+                        3226092.2985644205,
+                        45.99533769472015,
+                        3774.9004599975246,
+                        47779463381.716324,
+                        13351.65664145482,
+                        168581793221.04626,
+                        1154.8078675879951,
+                        0.23370702111281955,
+                        164.58506800054815,
+                        162.64966999891178,
+                        164.05045253951525,
+                        28.174276059399006,
+                        201.27817465864945,
+                        165.51230636809532,
+                        9696.40251915787,
+                        586.278911674801,
+                        43.07726123566929,
+                        1134.4475290125124,
+                        324124203.9933452,
+                        3.0518925598222344,
+                        7.5830329418487015,
+                        3.5530416523623574,
+                        218330341.20169476,
+                        0.05300153240159543,
+                        0.15676878135358152,
+                        25367.107235328647
+                    ],
+                    "n_samples_seen": 61635,
+                    "n_features_in": 30,
+                    "columns": [
+                        "absolute_humidity_2m:gm3",
+                        "air_density_2m:kgm3",
+                        "clear_sky_energy_1h:J",
+                        "clear_sky_rad:W",
+                        "cloud_base_agl:m",
+                        "dew_point_2m:K",
+                        "diffuse_rad:W",
+                        "diffuse_rad_1h:J",
+                        "direct_rad:W",
+                        "direct_rad_1h:J",
+                        "effective_cloud_cover:p",
+                        "is_in_shadow:idx",
+                        "msl_pressure:hPa",
+                        "pressure_100m:hPa",
+                        "pressure_50m:hPa",
+                        "prob_rime:p",
+                        "relative_humidity_1000hPa:p",
+                        "sfc_pressure:hPa",
+                        "sun_azimuth:d",
+                        "sun_elevation:d",
+                        "t_1000hPa:K",
+                        "total_cloud_cover:p",
+                        "visibility:m",
+                        "wind_speed_10m:ms",
+                        "wind_speed_u_10m:ms",
+                        "wind_speed_v_10m:ms",
+                        "sun_product",
+                        "cloud_ratio",
+                        "cloud_cover_over_30%",
+                        "sun_addition"
+                    ],
+                    "scale_method": "scale_normal"
+                }
+            ],
+            "scale_y": {
+                "scale": [
+                    798.557348353759
+                ],
+                "mean": [
+                    313.6506203050215
+                ],
+                "var": [
+                    637693.8386097868
+                ],
+                "n_samples_seen": 61635,
+                "n_features_in": 1,
+                "columns": [
+                    "target"
+                ],
+                "scale_method": "scale_normal"
+            },
+            "ml_task": "regression",
+            "params": {
+                "columns_preprocessing": {
+                    "absolute_humidity_2m:gm3": [
+                        "scale_normal"
+                    ],
+                    "air_density_2m:kgm3": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_energy_1h:J": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_rad:W": [
+                        "scale_normal"
+                    ],
+                    "cloud_base_agl:m": [
+                        "scale_normal"
+                    ],
+                    "dew_point_2m:K": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad:W": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "direct_rad:W": [
+                        "scale_normal"
+                    ],
+                    "direct_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "effective_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "is_in_shadow:idx": [
+                        "scale_normal"
+                    ],
+                    "msl_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_100m:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_50m:hPa": [
+                        "scale_normal"
+                    ],
+                    "prob_rime:p": [
+                        "scale_normal"
+                    ],
+                    "relative_humidity_1000hPa:p": [
+                        "scale_normal"
+                    ],
+                    "sfc_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "sun_azimuth:d": [
+                        "scale_normal"
+                    ],
+                    "sun_elevation:d": [
+                        "scale_normal"
+                    ],
+                    "t_1000hPa:K": [
+                        "scale_normal"
+                    ],
+                    "total_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "visibility:m": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_u_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_v_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "sun_product": [
+                        "scale_normal"
+                    ],
+                    "cloud_ratio": [
+                        "scale_normal"
+                    ],
+                    "cloud_cover_over_30%": [
+                        "scale_normal"
+                    ],
+                    "sun_addition": [
+                        "scale_normal"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "scale_normal"
+                ],
+                "ml_task": "regression"
+            }
+        },
+        {
+            "scale": [
+                {
+                    "scale": [
+                        2.7222696567556035,
+                        0.03642248281673557,
+                        842244.0015600256,
+                        234.54620641958454,
+                        1800.432459673567,
+                        6.75899598211002,
+                        61.56815692396462,
+                        219001.05327441543,
+                        116.05993933627177,
+                        412487.15296579764,
+                        33.98262395518387,
+                        0.4830117055024746,
+                        12.887170144396716,
+                        12.811133586319356,
+                        12.866415384340412,
+                        5.305287006637273,
+                        14.184011979229446,
+                        12.923757447407457,
+                        98.54130620481686,
+                        24.238766176071778,
+                        6.5437525715034,
+                        33.68216296576262,
+                        17966.864069903917,
+                        1.7428956313256405,
+                        2.7489265950480894,
+                        1.8828973156976991,
+                        14887.376414952938,
+                        0.2308628759395831,
+                        0.39551435772200894,
+                        159.92823390982883
+                    ],
+                    "mean": [
+                        6.234796383192894,
+                        1.2523835927308442,
+                        532430.5509238658,
+                        147.756352751885,
+                        1644.8704055304925,
+                        275.81024501859645,
+                        39.803215705984414,
+                        143515.08729967006,
+                        52.10657377969001,
+                        187750.56495404366,
+                        66.96205730138773,
+                        0.5675103431491847,
+                        1009.2751140194353,
+                        995.5988225686074,
+                        1001.7157184307773,
+                        0.7496966010115064,
+                        73.92550822511984,
+                        1007.8597837577938,
+                        179.61722867214797,
+                        -0.8857627999848322,
+                        279.973300385539,
+                        73.81862174737381,
+                        33028.960912138005,
+                        3.0101525101091746,
+                        0.7122073497420123,
+                        0.6722195172426285,
+                        6232.255461233569,
+                        0.8635507960456648,
+                        0.8058895108298856,
+                        91.90978948485206
+                    ],
+                    "var": [
+                        7.4107520840922705,
+                        0.0013265972545353979,
+                        709374958163.8444,
+                        55011.922945818354,
+                        3241557.041846211,
+                        45.68402668617939,
+                        3790.6379470139327,
+                        47961461335.303345,
+                        13469.909518739081,
+                        170145651361.8293,
+                        1154.8187308794365,
+                        0.23330030765240922,
+                        166.07915433063008,
+                        164.12514376651984,
+                        165.54464484239165,
+                        28.14607022279428,
+                        201.1861958269244,
+                        167.02350655941973,
+                        9710.389028551479,
+                        587.5177857382813,
+                        42.82069771705736,
+                        1134.488102052191,
+                        322808204.5064043,
+                        3.037685181694003,
+                        7.556597424962684,
+                        3.545302301461601,
+                        221633976.520497,
+                        0.05329766748709534,
+                        0.15643160716425325,
+                        25577.040001516925
+                    ],
+                    "n_samples_seen": 61635,
+                    "n_features_in": 30,
+                    "columns": [
+                        "absolute_humidity_2m:gm3",
+                        "air_density_2m:kgm3",
+                        "clear_sky_energy_1h:J",
+                        "clear_sky_rad:W",
+                        "cloud_base_agl:m",
+                        "dew_point_2m:K",
+                        "diffuse_rad:W",
+                        "diffuse_rad_1h:J",
+                        "direct_rad:W",
+                        "direct_rad_1h:J",
+                        "effective_cloud_cover:p",
+                        "is_in_shadow:idx",
+                        "msl_pressure:hPa",
+                        "pressure_100m:hPa",
+                        "pressure_50m:hPa",
+                        "prob_rime:p",
+                        "relative_humidity_1000hPa:p",
+                        "sfc_pressure:hPa",
+                        "sun_azimuth:d",
+                        "sun_elevation:d",
+                        "t_1000hPa:K",
+                        "total_cloud_cover:p",
+                        "visibility:m",
+                        "wind_speed_10m:ms",
+                        "wind_speed_u_10m:ms",
+                        "wind_speed_v_10m:ms",
+                        "sun_product",
+                        "cloud_ratio",
+                        "cloud_cover_over_30%",
+                        "sun_addition"
+                    ],
+                    "scale_method": "scale_normal"
+                }
+            ],
+            "scale_y": {
+                "scale": [
+                    808.7677219310159
+                ],
+                "mean": [
+                    317.0280977529002
+                ],
+                "var": [
+                    654105.228037485
+                ],
+                "n_samples_seen": 61635,
+                "n_features_in": 1,
+                "columns": [
+                    "target"
+                ],
+                "scale_method": "scale_normal"
+            },
+            "ml_task": "regression",
+            "params": {
+                "columns_preprocessing": {
+                    "absolute_humidity_2m:gm3": [
+                        "scale_normal"
+                    ],
+                    "air_density_2m:kgm3": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_energy_1h:J": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_rad:W": [
+                        "scale_normal"
+                    ],
+                    "cloud_base_agl:m": [
+                        "scale_normal"
+                    ],
+                    "dew_point_2m:K": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad:W": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "direct_rad:W": [
+                        "scale_normal"
+                    ],
+                    "direct_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "effective_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "is_in_shadow:idx": [
+                        "scale_normal"
+                    ],
+                    "msl_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_100m:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_50m:hPa": [
+                        "scale_normal"
+                    ],
+                    "prob_rime:p": [
+                        "scale_normal"
+                    ],
+                    "relative_humidity_1000hPa:p": [
+                        "scale_normal"
+                    ],
+                    "sfc_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "sun_azimuth:d": [
+                        "scale_normal"
+                    ],
+                    "sun_elevation:d": [
+                        "scale_normal"
+                    ],
+                    "t_1000hPa:K": [
+                        "scale_normal"
+                    ],
+                    "total_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "visibility:m": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_u_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_v_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "sun_product": [
+                        "scale_normal"
+                    ],
+                    "cloud_ratio": [
+                        "scale_normal"
+                    ],
+                    "cloud_cover_over_30%": [
+                        "scale_normal"
+                    ],
+                    "sun_addition": [
+                        "scale_normal"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "scale_normal"
+                ],
+                "ml_task": "regression"
+            }
+        },
+        {
+            "scale": [
+                {
+                    "scale": [
+                        2.7278355878538547,
+                        0.036354758117372585,
+                        844066.4542201589,
+                        235.11000979755667,
+                        1790.5178802917599,
+                        6.762588970192493,
+                        61.864388723606496,
+                        220047.92323320833,
+                        116.25390502458357,
+                        413191.6415872066,
+                        34.044314387830795,
+                        0.4834124446340739,
+                        12.888238331353332,
+                        12.811461629178313,
+                        12.866109613265365,
+                        5.285552863145256,
+                        14.205768995549663,
+                        12.922955429313843,
+                        98.57672377062421,
+                        24.245566898982215,
+                        6.538882996582392,
+                        33.725535085823566,
+                        17992.438838795642,
+                        1.7474494434384844,
+                        2.759162855696629,
+                        1.8836988077297918,
+                        14834.878614599367,
+                        0.23027495182952756,
+                        0.39646250678470074,
+                        160.0706071650007
+                    ],
+                    "mean": [
+                        6.246779480694108,
+                        1.2521282405645628,
+                        535388.0770416915,
+                        148.6745874899861,
+                        1638.277886126134,
+                        275.8378784461414,
+                        40.062121572029476,
+                        144339.57866412232,
+                        52.304176529099216,
+                        188414.15712634914,
+                        66.99553509577066,
+                        0.5653757544292297,
+                        1009.2034192067628,
+                        995.5320835840123,
+                        1001.6477444683587,
+                        0.7389021839841826,
+                        73.91196337154076,
+                        1007.7906218246587,
+                        179.86706283960672,
+                        -0.7730608943160059,
+                        280.0043460237685,
+                        73.76931502697846,
+                        32996.63661749577,
+                        3.016011745536916,
+                        0.7136701764744683,
+                        0.6637147924461116,
+                        6235.629398187676,
+                        0.8642707635842622,
+                        0.8046596145110001,
+                        92.36629812405012
+                    ],
+                    "var": [
+                        7.441086994361985,
+                        0.001321668437772668,
+                        712448179139.7916,
+                        55276.716707007196,
+                        3205954.2796444967,
+                        45.732609579769154,
+                        3827.20259214549,
+                        48421088519.24795,
+                        13514.9704334649,
+                        170727332677.53064,
+                        1159.0153421374628,
+                        0.23368759162709157,
+                        166.10668728576533,
+                        164.1335490759082,
+                        165.53677658055946,
+                        27.93706906910301,
+                        201.80387275492006,
+                        167.0027770280321,
+                        9717.370469349948,
+                        587.847514253022,
+                        42.75699084299432,
+                        1137.4117168251162,
+                        323727855.36780185,
+                        3.053579557373469,
+                        7.612979664255977,
+                        3.548321198242639,
+                        220073623.50989765,
+                        0.05302655344009124,
+                        0.15718251928600888,
+                        25622.59927817197
+                    ],
+                    "n_samples_seen": 61636,
+                    "n_features_in": 30,
+                    "columns": [
+                        "absolute_humidity_2m:gm3",
+                        "air_density_2m:kgm3",
+                        "clear_sky_energy_1h:J",
+                        "clear_sky_rad:W",
+                        "cloud_base_agl:m",
+                        "dew_point_2m:K",
+                        "diffuse_rad:W",
+                        "diffuse_rad_1h:J",
+                        "direct_rad:W",
+                        "direct_rad_1h:J",
+                        "effective_cloud_cover:p",
+                        "is_in_shadow:idx",
+                        "msl_pressure:hPa",
+                        "pressure_100m:hPa",
+                        "pressure_50m:hPa",
+                        "prob_rime:p",
+                        "relative_humidity_1000hPa:p",
+                        "sfc_pressure:hPa",
+                        "sun_azimuth:d",
+                        "sun_elevation:d",
+                        "t_1000hPa:K",
+                        "total_cloud_cover:p",
+                        "visibility:m",
+                        "wind_speed_10m:ms",
+                        "wind_speed_u_10m:ms",
+                        "wind_speed_v_10m:ms",
+                        "sun_product",
+                        "cloud_ratio",
+                        "cloud_cover_over_30%",
+                        "sun_addition"
+                    ],
+                    "scale_method": "scale_normal"
+                }
+            ],
+            "scale_y": {
+                "scale": [
+                    811.1991029384758
+                ],
+                "mean": [
+                    319.70390019631384
+                ],
+                "var": [
+                    658043.9846081879
+                ],
+                "n_samples_seen": 61636,
+                "n_features_in": 1,
+                "columns": [
+                    "target"
+                ],
+                "scale_method": "scale_normal"
+            },
+            "ml_task": "regression",
+            "params": {
+                "columns_preprocessing": {
+                    "absolute_humidity_2m:gm3": [
+                        "scale_normal"
+                    ],
+                    "air_density_2m:kgm3": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_energy_1h:J": [
+                        "scale_normal"
+                    ],
+                    "clear_sky_rad:W": [
+                        "scale_normal"
+                    ],
+                    "cloud_base_agl:m": [
+                        "scale_normal"
+                    ],
+                    "dew_point_2m:K": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad:W": [
+                        "scale_normal"
+                    ],
+                    "diffuse_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "direct_rad:W": [
+                        "scale_normal"
+                    ],
+                    "direct_rad_1h:J": [
+                        "scale_normal"
+                    ],
+                    "effective_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "is_in_shadow:idx": [
+                        "scale_normal"
+                    ],
+                    "msl_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_100m:hPa": [
+                        "scale_normal"
+                    ],
+                    "pressure_50m:hPa": [
+                        "scale_normal"
+                    ],
+                    "prob_rime:p": [
+                        "scale_normal"
+                    ],
+                    "relative_humidity_1000hPa:p": [
+                        "scale_normal"
+                    ],
+                    "sfc_pressure:hPa": [
+                        "scale_normal"
+                    ],
+                    "sun_azimuth:d": [
+                        "scale_normal"
+                    ],
+                    "sun_elevation:d": [
+                        "scale_normal"
+                    ],
+                    "t_1000hPa:K": [
+                        "scale_normal"
+                    ],
+                    "total_cloud_cover:p": [
+                        "scale_normal"
+                    ],
+                    "visibility:m": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_u_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "wind_speed_v_10m:ms": [
+                        "scale_normal"
+                    ],
+                    "sun_product": [
+                        "scale_normal"
+                    ],
+                    "cloud_ratio": [
+                        "scale_normal"
+                    ],
+                    "cloud_cover_over_30%": [
+                        "scale_normal"
+                    ],
+                    "sun_addition": [
+                        "scale_normal"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "scale_normal"
+                ],
+                "ml_task": "regression"
+            }
+        }
+    ],
+    "learners": [
+        {
+            "library_version": "1.3.1",
+            "algorithm_name": "Neural Network",
+            "algorithm_short_name": "Neural Network",
+            "uid": "6ec192db-6d55-4e71-b81c-c7dd8488d700",
+            "params": {
+                "model_type": "Neural Network",
+                "ml_task": "regression",
+                "n_jobs": -1,
+                "seed": 43,
+                "dense_1_size": 32,
+                "dense_2_size": 4,
+                "learning_rate": 0.1,
+                "explain_level": 0
+            },
+            "name": "learner_fold_0"
+        },
+        {
+            "library_version": "1.3.1",
+            "algorithm_name": "Neural Network",
+            "algorithm_short_name": "Neural Network",
+            "uid": "3b317bbd-a93c-4993-96b4-b48c0bab31be",
+            "params": {
+                "model_type": "Neural Network",
+                "ml_task": "regression",
+                "n_jobs": -1,
+                "seed": 43,
+                "dense_1_size": 32,
+                "dense_2_size": 4,
+                "learning_rate": 0.1,
+                "explain_level": 0
+            },
+            "name": "learner_fold_1"
+        },
+        {
+            "library_version": "1.3.1",
+            "algorithm_name": "Neural Network",
+            "algorithm_short_name": "Neural Network",
+            "uid": "53fd294b-99da-4ca0-aa3d-c86108074440",
+            "params": {
+                "model_type": "Neural Network",
+                "ml_task": "regression",
+                "n_jobs": -1,
+                "seed": 43,
+                "dense_1_size": 32,
+                "dense_2_size": 4,
+                "learning_rate": 0.1,
+                "explain_level": 0
+            },
+            "name": "learner_fold_2"
+        },
+        {
+            "library_version": "1.3.1",
+            "algorithm_name": "Neural Network",
+            "algorithm_short_name": "Neural Network",
+            "uid": "47c46661-5cd3-49dc-8fb8-4d401ef6a7c1",
+            "params": {
+                "model_type": "Neural Network",
+                "ml_task": "regression",
+                "n_jobs": -1,
+                "seed": 43,
+                "dense_1_size": 32,
+                "dense_2_size": 4,
+                "learning_rate": 0.1,
+                "explain_level": 0
+            },
+            "name": "learner_fold_3"
+        },
+        {
+            "library_version": "1.3.1",
+            "algorithm_name": "Neural Network",
+            "algorithm_short_name": "Neural Network",
+            "uid": "5e56552b-14b5-47c2-a2aa-6cdf2e2249cc",
+            "params": {
+                "model_type": "Neural Network",
+                "ml_task": "regression",
+                "n_jobs": -1,
+                "seed": 43,
+                "dense_1_size": 32,
+                "dense_2_size": 4,
+                "learning_rate": 0.1,
+                "explain_level": 0
+            },
+            "name": "learner_fold_4"
+        }
+    ],
+    "params": {
+        "additional": {
+            "max_rows_limit": null,
+            "max_cols_limit": null
+        },
+        "preprocessing": {
+            "columns_preprocessing": {
+                "absolute_humidity_2m:gm3": [
+                    "scale_normal"
+                ],
+                "air_density_2m:kgm3": [
+                    "scale_normal"
+                ],
+                "clear_sky_energy_1h:J": [
+                    "scale_normal"
+                ],
+                "clear_sky_rad:W": [
+                    "scale_normal"
+                ],
+                "cloud_base_agl:m": [
+                    "scale_normal"
+                ],
+                "dew_point_2m:K": [
+                    "scale_normal"
+                ],
+                "diffuse_rad:W": [
+                    "scale_normal"
+                ],
+                "diffuse_rad_1h:J": [
+                    "scale_normal"
+                ],
+                "direct_rad:W": [
+                    "scale_normal"
+                ],
+                "direct_rad_1h:J": [
+                    "scale_normal"
+                ],
+                "effective_cloud_cover:p": [
+                    "scale_normal"
+                ],
+                "is_in_shadow:idx": [
+                    "scale_normal"
+                ],
+                "msl_pressure:hPa": [
+                    "scale_normal"
+                ],
+                "pressure_100m:hPa": [
+                    "scale_normal"
+                ],
+                "pressure_50m:hPa": [
+                    "scale_normal"
+                ],
+                "prob_rime:p": [
+                    "scale_normal"
+                ],
+                "relative_humidity_1000hPa:p": [
+                    "scale_normal"
+                ],
+                "sfc_pressure:hPa": [
+                    "scale_normal"
+                ],
+                "sun_azimuth:d": [
+                    "scale_normal"
+                ],
+                "sun_elevation:d": [
+                    "scale_normal"
+                ],
+                "t_1000hPa:K": [
+                    "scale_normal"
+                ],
+                "total_cloud_cover:p": [
+                    "scale_normal"
+                ],
+                "visibility:m": [
+                    "scale_normal"
+                ],
+                "wind_speed_10m:ms": [
+                    "scale_normal"
+                ],
+                "wind_speed_u_10m:ms": [
+                    "scale_normal"
+                ],
+                "wind_speed_v_10m:ms": [
+                    "scale_normal"
+                ],
+                "sun_product": [
+                    "scale_normal"
+                ],
+                "cloud_ratio": [
+                    "scale_normal"
+                ],
+                "cloud_cover_over_30%": [
+                    "scale_normal"
+                ],
+                "sun_addition": [
+                    "scale_normal"
+                ]
+            },
+            "target_preprocessing": [
+                "na_exclude",
+                "scale_normal"
+            ],
+            "ml_task": "regression"
+        },
+        "validation_strategy": {
+            "validation_type": "kfold",
+            "k_folds": 5,
+            "shuffle": true,
+            "random_seed": 42,
+            "X_path": "automl/X.data",
+            "y_path": "automl/y.data",
+            "results_path": "automl"
+        },
+        "learner": {
+            "model_type": "Neural Network",
+            "ml_task": "regression",
+            "n_jobs": -1,
+            "seed": 43,
+            "dense_1_size": 32,
+            "dense_2_size": 4,
+            "learning_rate": 0.1,
+            "explain_level": 0
+        },
+        "automl_random_state": 42,
+        "ml_task": "regression",
+        "explain_level": 0,
+        "name": "50_NeuralNetwork",
+        "status": "initialized",
+        "final_loss": null,
+        "train_time": null,
+        "data_type": "original",
+        "max_time_for_learner": 60
+    },
+    "saved": [
+        "50_NeuralNetwork/learner_fold_0.neural_network",
+        "50_NeuralNetwork/learner_fold_1.neural_network",
+        "50_NeuralNetwork/learner_fold_2.neural_network",
+        "50_NeuralNetwork/learner_fold_3.neural_network",
+        "50_NeuralNetwork/learner_fold_4.neural_network"
+    ],
+    "predictions_fname": "50_NeuralNetwork/predictions_out_of_folds.csv",
+    "metric_name": "mae",
+    "final_loss": "125.89787153788947",
+    "train_time": 51.48825812339783,
+    "is_stacked": false,
+    "joblib_version": "1.3.2"
+}
