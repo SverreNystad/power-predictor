@@ -95,6 +95,31 @@ def prepare_data(
     )
 
 
+def get_location_datasets(
+    df: pd.DataFrame,
+) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
+    locations = ["location_a", "location_b", "location_c"]
+    x_a = df[df["location_a"] == 1]
+    x_a = x_a.drop(locations, axis=1)
+    y_a = x_a["pv_measurement"]
+    if "pv_measurement" in x_a.columns:
+        x_a = x_a.drop("pv_measurement", axis=1)
+
+    x_b = df[df["location_b"] == 1]
+    x_b = x_b.drop(locations, axis=1)
+    y_b = x_b["pv_measurement"]
+    if "pv_measurement" in x_b.columns:
+        x_b = x_b.drop("pv_measurement", axis=1)
+
+    x_c = df[df["location_c"] == 1]
+    x_c = x_c.drop(locations, axis=1)
+    y_c = x_c["pv_measurement"]
+    if "pv_measurement" in x_b.columns:
+        x_b = x_b.drop("pv_measurement", axis=1)
+
+    return (x_a, x_b, x_c, y_a, y_b, y_c)
+
+
 def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop("snow_density:kgm3", axis=1)
     df = df.drop("ceiling_height_agl:m", axis=1)
