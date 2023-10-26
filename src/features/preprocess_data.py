@@ -151,7 +151,6 @@ def get_final_prediction(
         X_test_estimated_c,
     ) = get_preprocessed_test_data_with_time()
 
-
     # Ensure 'time' columns have the same data type before merging
     tests["time"] = pd.to_datetime(tests["time"])
     X_test_estimated_a["date_forecast"] = pd.to_datetime(
@@ -230,7 +229,7 @@ def get_preprocessed_test_data_with_time(
     X_test_estimated_a = remove_missing_features(X_test_estimated_a)
     X_test_estimated_b = remove_missing_features(X_test_estimated_b)
     X_test_estimated_c = remove_missing_features(X_test_estimated_c)
-    
+
     X_test_a_correct_features = feature_engineer(X_test_estimated_a)
     X_test_b_correct_features = feature_engineer(X_test_estimated_b)
     X_test_c_correct_features = feature_engineer(X_test_estimated_c)
@@ -268,7 +267,7 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
         X_test_estimated_b,
         X_test_estimated_c,
     ) = get_raw_data()
-    
+
     X_test_estimated_a = remove_missing_features(X_test_estimated_a)
     X_test_estimated_b = remove_missing_features(X_test_estimated_b)
     X_test_estimated_c = remove_missing_features(X_test_estimated_c)

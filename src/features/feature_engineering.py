@@ -49,8 +49,12 @@ def prepare_data(
     train_estimated = remove_missing_features(train_estimated)
 
     # Handle missing values (e.g., imputation, removal)
-    train_observed_clean = train_observed.dropna()
-    train_estimated_clean = train_estimated.dropna()
+    train_observed_clean = train_observed.dropna(
+        subset=["visibility:m", "pv_measurement"]
+    )
+    train_estimated_clean = train_estimated.dropna(
+        subset=["visibility:m", "pv_measurement"]
+    )
 
     # Remove discrepancies
     train_observed_clean = remove_discrepancies(train_observed_clean)
@@ -151,7 +155,10 @@ def remove_night_light_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
 def remove_zero_value_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     # Remove all rows where pv_measurement has the same value for 100 timesteps and is 0 remove them
 
+    # Didn't do anything lol
+
     # Step 1: Identify runs of equal, non-zero values
+    return df
     df["group"] = (
         (df["pv_measurement"] != df["pv_measurement"].shift())
         | (df["pv_measurement"] == 0)
@@ -249,6 +256,12 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame["sun_addition"] = (
         data_frame["diffuse_rad:W"] + data_frame["direct_rad:W"]
     )
+
+    # data_frame["sun addition W to 1h ratio"] = (
+    #     data_frame["sun_addition"]
+    #     * 3600
+    #     / (data_frame["direct_rad_1h:J"] + data_frame["diffuse_rad_1h:J"])
+    # ).fillna(1)
 
     data_frame["is_freezing"] = (data_frame["t_1000hPa:K"] < 273).astype(int)
 
