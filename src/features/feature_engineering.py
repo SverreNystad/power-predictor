@@ -654,6 +654,6 @@ def aggregate_rows(df: pd.DataFrame) -> pd.DataFrame:
     df_agg = df.groupby('group').agg(aggregation).reset_index(drop=True)
     
     # Drop the 'group' column from the original dataframe
-    df.drop('group', axis=1, inplace=True)
+    df_agg.drop('group', axis=1, inplace=True)
     
     return df_agg
