@@ -447,3 +447,36 @@ def plot_acf_daily_weekly_monthly_yearly(
     plt.savefig(f"{FIGURE_PATH}acf/{feature}_yearly_for_{title}.png")
     if show:
         plt.show()
+
+def plot_actual_vs_prediction(actual, prediction) -> None:
+    """
+    Plot the actual values against the predicted values.
+    """
+    plt.figure(figsize=(12, 6))
+    # Line plot of Actual values
+    plt.plot(actual.reset_index(drop=True), label='Actual', linestyle='-', marker='o', markersize=5, alpha=0.7, color='blue')
+    # Line plot of Predicted values
+    plt.plot(prediction, label='Predicted', linestyle='--', marker='x', markersize=5, alpha=0.7, color='orange')
+    # Titles and labels
+    plt.title('Actual vs Predicted - Observed Data', fontsize=16)
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(f"{FIGURE_PATH}prediction_vs_actuals/actual_vs_predicted.png")
+    plt.show()
+
+
+    # Visualise the monthly predictions
+    # Observed Data
+    plt.figure(figsize=(12, 6))
+    # Line plot of Actual values
+    plt.plot(actual.reset_index(drop=True)[:24*7*4], label='Actual', linestyle='-', marker='o', markersize=5, alpha=0.7, color='blue')
+    # Line plot of Predicted values
+    plt.plot(prediction[:24*7*4], label='Predicted', linestyle='--', marker='x', markersize=5, alpha=0.7, color='orange')
+    # Titles and labels
+    plt.title('Actual vs Predicted - Observed Data', fontsize=16)
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(f"{FIGURE_PATH}prediction_vs_actuals/actual_vs_predicted.png")
+    plt.show()
