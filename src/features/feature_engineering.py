@@ -318,18 +318,18 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = data_frame.drop("sfc_pressure:hPa", axis=1)
 
     # Add maximum pv_measurement based on location
-    # max_pv_a =
-    # max_pv_b =
-    # max_pv_c =
-    # data_frame["max_pv_location"] = np.where(
-    #     data_frame["location_a"] == 1,
-    #     max_pv_a,
-    #     np.where(
-    #         data_frame["location_b"] == 1,
-    #         max_pv_b,
-    #         np.where(data_frame["location_c"] == 1, max_pv_c, np.nan),
-    #     ),
-    # )
+    max_pv_a = 5733.42
+    max_pv_b = 1152.3
+    max_pv_c = 999.6
+    data_frame["max_pv_location"] = np.where(
+        data_frame["location_a"] == 1,
+        max_pv_a,
+        np.where(
+            data_frame["location_b"] == 1,
+            max_pv_b,
+            np.where(data_frame["location_c"] == 1, max_pv_c, np.nan),
+        ),
+    )
 
     return data_frame
 
