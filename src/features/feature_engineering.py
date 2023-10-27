@@ -635,3 +635,31 @@ def temporal_alignment(
     )
 
     return train_observed, train_estimated
+
+def temporal_alignment_tests(
+    test: pd.DataFrame
+) -> Tuple[pd.DataFrame]:
+    """
+    Aligns the temporal resolution of the datasets by aggregating the 15-min interval weather data to hourly intervals.
+
+    Args:
+        train (pd.DataFrame): The training targets DataFrame.
+        observed (pd.DataFrame): The observed training features DataFrame.
+        estimated (pd.DataFrame): The estimated training features DataFrame.
+
+    Returns:
+        train_observed (pd.DataFrame): The aligned training DataFrame with observed features.
+        train_estimated (pd.DataFrame): The aligned training DataFrame with estimated features.
+    """
+    # Convert the time columns to datetime objects
+    test["date_forecast"] = pd.to_datetime(test["date_forecast"])
+
+    # Set the date_forecast column as index for resampling
+    test.set_index("date_forecast", inplace=True)
+
+    # Resample the weather data to hourly intervals and aggregate the values by mean
+    test_resampled = test.resample("1H").mean()
+    # Reset the index after resampling
+    test_resampled.reset_index(inplace=True)
+
+    return test_resampled
