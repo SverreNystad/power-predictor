@@ -10,39 +10,6 @@ from src.features.feature_engineering import (
 )
 
 
-def fetch_preprocessed_uniform_data() -> (
-    Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]
-):
-    """
-    Fetch the preprocessed data for training and validation.
-    Does not make a distinction between observed and estimated data.
-
-    Returns:
-        X_train: The training data
-        y_train: The training labels
-        X_val: The validation data
-        y_val: The validation labels
-    """
-    (
-        X_train_obs_combined,
-        X_val_obs_combined,
-        y_train_obs_combined,
-        y_val_obs_combined,
-        X_train_est_combined,
-        X_val_est_combined,
-        y_train_est_combined,
-        y_val_est_combined,
-    ) = fetch_preprocessed_data()
-
-    # Merge the observed and estimated data
-    X_train = pd.concat([X_train_obs_combined, X_train_est_combined])
-    y_train = pd.concat([y_train_obs_combined, y_train_est_combined])
-    X_val = pd.concat([X_val_obs_combined, X_val_est_combined])
-    y_val = pd.concat([y_val_obs_combined, y_val_est_combined])
-
-    return X_train, y_train, X_val, y_val
-
-
 def fetch_preprocessed_data() -> (
     Tuple[
         pd.DataFrame,
@@ -151,7 +118,6 @@ def get_final_prediction(
         X_test_estimated_c,
     ) = get_preprocessed_test_data_with_time()
 
-
     # Ensure 'time' columns have the same data type before merging
     tests["time"] = pd.to_datetime(tests["time"])
     X_test_estimated_a["date_forecast"] = pd.to_datetime(
@@ -230,10 +196,6 @@ def get_preprocessed_test_data_with_time(
     X_test_estimated_a = remove_missing_features(X_test_estimated_a)
     X_test_estimated_b = remove_missing_features(X_test_estimated_b)
     X_test_estimated_c = remove_missing_features(X_test_estimated_c)
-
-    X_test_estimated_a = add_location(X_test_estimated_a, "a")
-    X_test_estimated_b = add_location(X_test_estimated_b, "b")
-    X_test_estimated_c = add_location(X_test_estimated_c, "c")
 
     X_test_a_correct_features = feature_engineer(X_test_estimated_a)
     X_test_b_correct_features = feature_engineer(X_test_estimated_b)
@@ -326,7 +288,7 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
         X_test_estimated_b,
         X_test_estimated_c,
     ) = get_raw_data()
-    
+
     X_test_estimated_a = remove_missing_features(X_test_estimated_a)
     X_test_estimated_b = remove_missing_features(X_test_estimated_b)
     X_test_estimated_c = remove_missing_features(X_test_estimated_c)

@@ -49,8 +49,12 @@ def prepare_data(
     train_estimated = remove_missing_features(train_estimated)
 
     # Handle missing values (e.g., imputation, removal)
-    train_observed_clean = train_observed.dropna()
-    train_estimated_clean = train_estimated.dropna()
+    train_observed_clean = train_observed.dropna(
+        subset=["visibility:m", "pv_measurement"]
+    )
+    train_estimated_clean = train_estimated.dropna(
+        subset=["visibility:m", "pv_measurement"]
+    )
 
     # Remove discrepancies
     train_observed_clean = remove_discrepancies(train_observed_clean)
@@ -89,6 +93,31 @@ def prepare_data(
         y_train_est,
         y_val_est,
     )
+
+
+def get_location_datasets(
+    df: pd.DataFrame,
+) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
+    locations = ["location_a", "location_b", "location_c"]
+    x_a = df[df["location_a"] == 1]
+    x_a = x_a.drop(locations, axis=1)
+    y_a = x_a["pv_measurement"]
+    if "pv_measurement" in x_a.columns:
+        x_a = x_a.drop("pv_measurement", axis=1)
+
+    x_b = df[df["location_b"] == 1]
+    x_b = x_b.drop(locations, axis=1)
+    y_b = x_b["pv_measurement"]
+    if "pv_measurement" in x_b.columns:
+        x_b = x_b.drop("pv_measurement", axis=1)
+
+    x_c = df[df["location_c"] == 1]
+    x_c = x_c.drop(locations, axis=1)
+    y_c = x_c["pv_measurement"]
+    if "pv_measurement" in x_b.columns:
+        x_b = x_b.drop("pv_measurement", axis=1)
+
+    return (x_a, x_b, x_c, y_a, y_b, y_c)
 
 
 def remove_missing_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -172,7 +201,10 @@ def remove_night_light_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
 def remove_zero_value_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     # Remove all rows where pv_measurement has the same value for 100 timesteps and is 0 remove them
 
+    # Didn't do anything lol
+
     # Step 1: Identify runs of equal, non-zero values
+    return df
     df["group"] = (
         (df["pv_measurement"] != df["pv_measurement"].shift())
         | (df["pv_measurement"] == 0)
@@ -217,6 +249,16 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         0,  # or your specified value
         data_frame["direct_rad_1h:J"] / data_frame["clear_sky_energy_1h:J"],
     )
+
+    # Check for the existence of date_calc column
+    if "date_calc" not in data_frame.columns:
+        data_frame["time_since_prediction"] = 0
+    else:
+        data_frame["time_since_prediction"] = (
+            data_frame["date_forecast"] - data_frame["date_calc"]
+        ).dt.total_seconds() / 3600
+
+    # data_frame["time_since_prediction"] =
 
     # data_frame["residual_radiation"] = (
     #     data_frame["clear_sky_rad:W"]
@@ -272,6 +314,12 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["diffuse_rad:W"] + data_frame["direct_rad:W"]
     )
 
+    # data_frame["sun addition W to 1h ratio"] = (
+    #     data_frame["sun_addition"]
+    #     * 3600
+    #     / (data_frame["direct_rad_1h:J"] + data_frame["diffuse_rad_1h:J"])
+    # ).fillna(1)
+
     data_frame["is_freezing"] = (data_frame["t_1000hPa:K"] < 273).astype(int)
 
     data_frame["is_snow"] = (data_frame[snow_columns] > 0).any(axis=1).astype(int)
@@ -290,6 +338,20 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = data_frame.drop("msl_pressure:hPa", axis=1)
     data_frame = data_frame.drop("pressure_100m:hPa", axis=1)
     data_frame = data_frame.drop("sfc_pressure:hPa", axis=1)
+
+    # Add maximum pv_measurement based on location
+    max_pv_a = 5733.42
+    max_pv_b = 1152.3
+    max_pv_c = 999.6
+    data_frame["max_pv_location"] = np.where(
+        data_frame["location_a"] == 1,
+        max_pv_a,
+        np.where(
+            data_frame["location_b"] == 1,
+            max_pv_b,
+            np.where(data_frame["location_c"] == 1, max_pv_c, np.nan),
+        ),
+    )
 
     return data_frame
 
@@ -634,55 +696,3 @@ def temporal_alignment(
     )
 
     return train_observed, train_estimated
-
-
-def _add_date_calc_and_correct_target(data_frame: pd.DataFrame) -> pd.DataFrame:
-    """
-    Add date_calc feature for each hour of the next day and now
-
-    Args:
-        data_frame (pd.DataFrame): Data frame with date_forecast column.
-    Returns:
-        pd.DataFrame: Data frame copy with date_calc column and corresponding pv_measurements.
-    """
-
-    # Check that the date_calc is not already in the dataframe
-    if "date_calc" in data_frame.columns:
-        return data_frame
-
-    df = data_frame.copy()
-
-    # Add date_calc for current time so that the model can learn what weather conditions lead to the current pv_measurement
-    df["date_calc"] = df["date_forecast"] + pd.DateOffset(hours=0)
-
-    # Add date_calc for each hour of the next day
-    rows_list = []
-    start_of_next_day = 24
-    end_of_next_day = 48
-
-    pv_lookup = df.set_index("date_forecast")["pv_measurement"].to_dict()
-
-    rows_list = []
-
-    # Vectorized approach to create new rows
-    for next_day_hour in range(
-        start_of_next_day, end_of_next_day
-    ):  # 25 to 48 hours for the next day
-        new_rows = df.copy()
-
-        new_rows["date_forecast"] = df["date_forecast"] + pd.to_timedelta(
-            next_day_hour, unit="h"
-        )
-        # Lookup the pv_measurement for the corresponding date_forecast
-        new_rows["pv_measurement"] = new_rows["date_forecast"].map(pv_lookup)
-        new_rows["date_forecast"] = next_day_hour
-        rows_list.append(new_rows)
-
-    df_new_rows = pd.concat(rows_list, ignore_index=True)
-    df = (
-        pd.concat([df, df_new_rows], ignore_index=True)
-        .sort_values(by=["date_calc"])
-        .reset_index(drop=True)
-    )
-
-    return df
