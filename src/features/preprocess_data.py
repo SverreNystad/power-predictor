@@ -7,6 +7,7 @@ from src.features.feature_engineering import (
     remove_missing_features,
     temporal_alignment,
     add_location,
+    temporal_alignment_tests,
 )
 
 
@@ -102,121 +103,7 @@ def fetch_preprocessed_data() -> (
         y_val_est_combined,
     )
 
-
-def get_final_prediction(
-    predictions_a: pd.DataFrame,
-    predictions_b: pd.DataFrame,
-    predictions_c: pd.DataFrame,
-) -> pd.DataFrame:
-    """
-    Get the final prediction by combining the predictions for the three locations.
-    """
-    tests = get_tests()
-    (
-        X_test_estimated_a,
-        X_test_estimated_b,
-        X_test_estimated_c,
-    ) = get_preprocessed_test_data_with_time()
-
-    # Ensure 'time' columns have the same data type before merging
-    tests["time"] = pd.to_datetime(tests["time"])
-    X_test_estimated_a["date_forecast"] = pd.to_datetime(
-        X_test_estimated_a["date_forecast"]
-    )
-    X_test_estimated_b["date_forecast"] = pd.to_datetime(
-        X_test_estimated_b["date_forecast"]
-    )
-    X_test_estimated_c["date_forecast"] = pd.to_datetime(
-        X_test_estimated_c["date_forecast"]
-    )
-
-    # Drop the 'prediction' column from 'tests' DataFrame if it exists
-    tests = tests.drop(columns="prediction", errors="ignore")
-
-    # Create DataFrames for each set of predictions with 'time', 'location', and 'prediction' columns
-    df_pred_a = pd.DataFrame(
-        {
-            "time": X_test_estimated_a["date_forecast"],
-            "location": "A",
-            "prediction": predictions_a,
-        }
-    )
-    df_pred_b = pd.DataFrame(
-        {
-            "time": X_test_estimated_b["date_forecast"],
-            "location": "B",
-            "prediction": predictions_b,
-        }
-    )
-    df_pred_c = pd.DataFrame(
-        {
-            "time": X_test_estimated_c["date_forecast"],
-            "location": "C",
-            "prediction": predictions_c,
-        }
-    )
-
-    # Concatenate the prediction DataFrames vertically
-    df_all_predictions = pd.concat([df_pred_a, df_pred_b, df_pred_c], ignore_index=True)
-
-    # Merge with the 'test' DataFrame on 'time' and 'location' to fill in the 'prediction' column in the 'test' DataFrame
-    test = tests.merge(df_all_predictions, on=["time", "location"], how="left")
-    return test
-
-
-def get_preprocessed_test_data_with_time(
-    fill: float = 0.0,
-) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """
-    Get the preprocessed test data with the 'date_forecast' column.
-    This is used for the final prediction where one need to join the predictions with the correct time.
-
-    Args:
-        fill (float, optional): The value to fill NaN values with. Defaults to 0.0.
-    Returns:
-        X_test_estimated_a_processed: The preprocessed test data for location A
-        X_test_estimated_b_processed: The preprocessed test data for location B
-        X_test_estimated_c_processed: The preprocessed test data for location C
-    """
-    (
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        _,
-        X_test_estimated_a,
-        X_test_estimated_b,
-        X_test_estimated_c,
-    ) = get_raw_data()
-    # Drop the 'date_calc' column from the test data
-    X_test_estimated_a = remove_missing_features(X_test_estimated_a)
-    X_test_estimated_b = remove_missing_features(X_test_estimated_b)
-    X_test_estimated_c = remove_missing_features(X_test_estimated_c)
-
-    X_test_a_correct_features = feature_engineer(X_test_estimated_a)
-    X_test_b_correct_features = feature_engineer(X_test_estimated_b)
-    X_test_c_correct_features = feature_engineer(X_test_estimated_c)
-
-    X_test_estimated_a_processed = X_test_a_correct_features.drop(columns=["date_calc"])
-    X_test_estimated_b_processed = X_test_b_correct_features.drop(columns=["date_calc"])
-    X_test_estimated_c_processed = X_test_c_correct_features.drop(columns=["date_calc"])
-
-    # Handle NaN values in the test data by filling them with the mean value of the respective column from the training data
-    X_test_estimated_a_processed.fillna(fill, inplace=True)
-    X_test_estimated_b_processed.fillna(fill, inplace=True)
-    X_test_estimated_c_processed.fillna(fill, inplace=True)
-    return (
-        X_test_estimated_a_processed,
-        X_test_estimated_b_processed,
-        X_test_estimated_c_processed,
-    )
-
-
-def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def get_preprocessed_test_data() -> pd.DataFrame:
     """
     Get the preprocessed test data without the 'date_forecast' column.
     """
@@ -234,6 +121,12 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
         X_test_estimated_b,
         X_test_estimated_c,
     ) = get_raw_data()
+
+    
+    # Align the test data to the same time as the training data
+    X_test_estimated_a = temporal_alignment_tests(X_test_estimated_a)
+    X_test_estimated_b = temporal_alignment_tests(X_test_estimated_b)
+    X_test_estimated_c = temporal_alignment_tests(X_test_estimated_c)
 
     X_test_estimated_a = remove_missing_features(X_test_estimated_a)
     X_test_estimated_b = remove_missing_features(X_test_estimated_b)
@@ -261,13 +154,10 @@ def get_preprocessed_test_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
         columns=["date_calc", "date_forecast"]
     )
 
-    # Handle NaN values in the test data by filling them with the mean value of the respective column from the training data
+    # # Handle NaN values in the test data by filling them with the mean value of the respective column from the training data
     X_test_estimated_a_processed.dropna()
     X_test_estimated_b_processed.dropna()
     X_test_estimated_c_processed.dropna()
-
-    return (
-        X_test_estimated_a_processed,
-        X_test_estimated_b_processed,
-        X_test_estimated_c_processed,
-    )
+    
+    tests = pd.concat([X_test_estimated_a_processed, X_test_estimated_b_processed, X_test_estimated_c_processed], ignore_index=True)
+    return tests
