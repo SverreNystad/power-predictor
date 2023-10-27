@@ -228,6 +228,16 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["direct_rad_1h:J"] / data_frame["clear_sky_energy_1h:J"],
     )
 
+    # Check for the existence of date_calc column
+    if "date_calc" not in data_frame.columns:
+        data_frame["time_since_prediction"] = 0
+    else:
+        data_frame["time_since_prediction"] = (
+            data_frame["date_forecast"] - data_frame["date_calc"]
+        ).dt.total_seconds() / 3600
+
+    # data_frame["time_since_prediction"] =
+
     # data_frame["residual_radiation"] = (
     #     data_frame["clear_sky_rad:W"]
     #     - data_frame["direct_rad:W"]
@@ -306,6 +316,20 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = data_frame.drop("msl_pressure:hPa", axis=1)
     data_frame = data_frame.drop("pressure_100m:hPa", axis=1)
     data_frame = data_frame.drop("sfc_pressure:hPa", axis=1)
+
+    # Add maximum pv_measurement based on location
+    # max_pv_a =
+    # max_pv_b =
+    # max_pv_c =
+    # data_frame["max_pv_location"] = np.where(
+    #     data_frame["location_a"] == 1,
+    #     max_pv_a,
+    #     np.where(
+    #         data_frame["location_b"] == 1,
+    #         max_pv_b,
+    #         np.where(data_frame["location_c"] == 1, max_pv_c, np.nan),
+    #     ),
+    # )
 
     return data_frame
 
@@ -611,4 +635,3 @@ def temporal_alignment(
     )
 
     return train_observed, train_estimated
-
