@@ -639,32 +639,21 @@ def temporal_alignment(
 def temporal_alignment_tests(
     test: pd.DataFrame
 ) -> Tuple[pd.DataFrame]:
-    """
-    Aligns the temporal resolution of the datasets by aggregating the 15-min interval weather data to hourly intervals.
 
-    Args:
-        test (pd.DataFrame): The test features DataFrame.
-    Returns:
-        test_resampled (pd.DataFrame): The aligned test DataFrame with observed features.
-    """
-    # Convert the time columns to datetime objects
-    test["date_forecast"] = pd.to_datetime(test["date_forecast"])
+    return aggregate_rows(test)
 
-    # Set the date_forecast column as index for resampling
-    test.set_index("date_forecast", inplace=True)
-
-    # expected_range = pd.date_range(start=test.index.min(), end=test.index.max(), freq='15T')
-    # missing = expected_range.difference(test.index)
-    # if not missing.empty:
-    #     print("Missing timestamps:", missing)
-     # Resample the weather data to hourly intervals and aggregate the values by mean
-    print("Before resampling")
-    print(test.head())
-    test_resampled = test.resample("1H").mean()
-    print("After resampling")
-    print(test_resampled.shape)
-
-    # Reset the index after resampling
-    test_resampled.reset_index(inplace=True)
-
-    return test_resampled
+def aggregate_rows(df: pd.DataFrame) -> pd.DataFrame:
+    # Create a 'group' column to group every 4 rows together
+    df['group'] = (df.index // 4)
+    
+    # Define the aggregation functions
+    aggregation = {col: 'mean' for col in df.columns if col != 'date_forecast'}
+    aggregation['date_forecast'] = 'first'
+    
+    # Group by the 'group' column and aggregate
+    df_agg = df.groupby('group').agg(aggregation).reset_index(drop=True)
+    
+    # Drop the 'group' column from the original dataframe
+    df.drop('group', axis=1, inplace=True)
+    
+    return df_agg
