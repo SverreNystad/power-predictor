@@ -122,11 +122,14 @@ def get_preprocessed_test_data() -> pd.DataFrame:
         X_test_estimated_c,
     ) = get_raw_data()
 
+    print(f"X_test_estimated_a.shape = {X_test_estimated_a.shape}, X_test_estimated_b.shape = {X_test_estimated_b.shape}, X_test_estimated_c.shape = {X_test_estimated_c.shape}")
     
     # Align the test data to the same time as the training data
     X_test_estimated_a = temporal_alignment_tests(X_test_estimated_a)
     X_test_estimated_b = temporal_alignment_tests(X_test_estimated_b)
     X_test_estimated_c = temporal_alignment_tests(X_test_estimated_c)
+    print("After temporal alignment")
+    print(f"X_test_estimated_a.shape = {X_test_estimated_a.shape}, X_test_estimated_b.shape = {X_test_estimated_b.shape}, X_test_estimated_c.shape = {X_test_estimated_c.shape}")
 
     X_test_estimated_a = remove_missing_features(X_test_estimated_a)
     X_test_estimated_b = remove_missing_features(X_test_estimated_b)
@@ -154,10 +157,10 @@ def get_preprocessed_test_data() -> pd.DataFrame:
         columns=["date_calc", "date_forecast"]
     )
 
-    # # Handle NaN values in the test data by filling them with the mean value of the respective column from the training data
-    X_test_estimated_a_processed.dropna()
-    X_test_estimated_b_processed.dropna()
-    X_test_estimated_c_processed.dropna()
-    
+    # # # Handle NaN values in the test data by filling them with the mean value of the respective column from the training data
+    # X_test_estimated_a_processed.dropna()
+    # X_test_estimated_b_processed.dropna()
+    # X_test_estimated_c_processed.dropna()
+    print(f"X_test_estimated_a_processed.shape = {X_test_estimated_a_processed.shape}, X_test_estimated_b_processed.shape = {X_test_estimated_b_processed.shape}, X_test_estimated_c_processed.shape = {X_test_estimated_c_processed.shape}")
     tests = pd.concat([X_test_estimated_a_processed, X_test_estimated_b_processed, X_test_estimated_c_processed], ignore_index=True)
     return tests
