@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# 3d plots
+*.html
+
 # Distribution / packaging
 .Python
 build/
