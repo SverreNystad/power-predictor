@@ -335,7 +335,7 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     average_pv_a = 814.88
     average_pv_b = 129.375
     average_pv_c = 117.6
-    data_frame["max_pv_location"] = np.where(
+    data_frame["average_pv_location"] = np.where(
         data_frame["location_a"] == 1,
         average_pv_a,
         np.where(
@@ -344,6 +344,12 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
             np.where(data_frame["location_c"] == 1, average_pv_c, np.nan),
         ),
     )
+
+    # Add Maximum_pv_location times sun_addition
+    data_frame["max_pv_location_times_sun_addition"] = (
+        data_frame["max_pv_location"] * data_frame["sun_addition"]
+    )
+
 
     return data_frame
 
