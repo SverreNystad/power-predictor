@@ -350,6 +350,11 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["max_pv_location"] * data_frame["sun_addition"]
     )
 
+    # Add Maximum_pv_location times sun_addition
+    data_frame["average_pv_location_times_sun_addition"] = (
+        data_frame["average_pv_location"] * data_frame["sun_addition"]
+    )
+
 
     return data_frame
 
