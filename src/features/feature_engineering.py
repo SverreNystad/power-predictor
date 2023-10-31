@@ -71,7 +71,7 @@ def prepare_data(
     y_obs = train_observed_clean["pv_measurement"]
 
     X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast", "date_calc"]
+        columns=["time", "pv_measurement", "date_calc", "date_forecast"]
     )
     y_est = train_estimated_clean["pv_measurement"]
 
@@ -340,43 +340,48 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame = data_frame.drop("sfc_pressure:hPa", axis=1)
 
     # Add maximum pv_measurement based on location
-    max_pv_a = 5733.42
-    max_pv_b = 1152.3
-    max_pv_c = 999.6
-    data_frame["max_pv_location"] = np.where(
-        data_frame["location_a"] == 1,
-        max_pv_a,
-        np.where(
-            data_frame["location_b"] == 1,
-            max_pv_b,
-            np.where(data_frame["location_c"] == 1, max_pv_c, np.nan),
-        ),
-    )
+    # max_pv_a = 5733.42
+    # max_pv_b = 1152.3
+    # max_pv_c = 999.6
+    # data_frame["max_pv_location"] = np.where(
+    #     data_frame["location_a"] == 1,
+    #     max_pv_a,
+    #     np.where(
+    #         data_frame["location_b"] == 1,
+    #         max_pv_b,
+    #         np.where(data_frame["location_c"] == 1, max_pv_c, np.nan),
+    #     ),
+    # )
 
-    # Add average pv_measurement based on location
-    average_pv_a = 814.88
-    average_pv_b = 129.375
-    average_pv_c = 117.6
-    data_frame["average_pv_location"] = np.where(
-        data_frame["location_a"] == 1,
-        average_pv_a,
-        np.where(
-            data_frame["location_b"] == 1,
-            average_pv_b,
-            np.where(data_frame["location_c"] == 1, average_pv_c, np.nan),
-        ),
-    )
+    # # Add average pv_measurement based on location
+    # average_pv_a = 814.88
+    # average_pv_b = 129.375
+    # average_pv_c = 117.6
+    # data_frame["average_pv_location"] = np.where(
+    #     data_frame["location_a"] == 1,
+    #     average_pv_a,
+    #     np.where(
+    #         data_frame["location_b"] == 1,
+    #         average_pv_b,
+    #         np.where(data_frame["location_c"] == 1, average_pv_c, np.nan),
+    #     ),
+    # )
 
-    # Add Maximum_pv_location times sun_addition
-    data_frame["max_pv_location_times_sun_addition"] = (
-        data_frame["max_pv_location"] * data_frame["sun_addition"]
-    )
+    # # Add Maximum_pv_location times sun_addition
+    # data_frame["max_pv_location_times_sun_addition"] = (
+    #     data_frame["max_pv_location"] * data_frame["sun_addition"]
+    # )
 
-    # Add Maximum_pv_location times sun_addition
-    data_frame["average_pv_location_times_sun_addition"] = (
-        data_frame["average_pv_location"] * data_frame["sun_addition"]
-    )
+    # # Add Maximum_pv_location times sun_addition
+    # data_frame["average_pv_location_times_sun_addition"] = (
+    #     data_frame["average_pv_location"] * data_frame["sun_addition"]
+    # )
 
+    # data_frame["sun_addition_temp_ratio"] = (
+    #     data_frame["max_pv_location"]
+    #     * data_frame["sun_addition"]
+    #     / data_frame["t_1000hPa:K"]
+    # )
 
     return data_frame
 
