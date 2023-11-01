@@ -14,6 +14,7 @@ def prepare_data(
     train_estimated: pd.DataFrame,
     test_size=0.2,
     random_state=42,
+    drop_features: bool = True,
 ) -> Tuple[
     pd.DataFrame,
     pd.DataFrame,
@@ -65,16 +66,29 @@ def prepare_data(
     train_estimated_clean = feature_engineer(train_estimated_clean)
 
     # Split the data into features (X) and target (y)
-    X_obs = train_observed_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast", "date_calc"] , errors="ignore"
-    )
+
+    
+
     y_obs = train_observed_clean["pv_measurement"]
 
-    X_est = train_estimated_clean.drop(
-        columns=["time", "pv_measurement", "date_calc", "date_forecast"]
-    )
-    y_est = train_estimated_clean["pv_measurement"]
+    if drop_features:
+        X_obs = train_observed_clean.drop(
+            columns=["time", "pv_measurement", "date_forecast", "date_calc"] , errors="ignore"
+        )
+    else:
+        X_obs = train_observed_clean
 
+    
+    
+    if drop_features:
+        X_est = train_estimated_clean.drop(
+            columns=["time", "pv_measurement", "date_calc", "date_forecast"]
+        )
+    else:
+        X_est = train_estimated_clean
+    
+    y_est = train_estimated_clean["pv_measurement"]
+    
     # Split the data into training and validation sets
     X_train_obs, X_val_obs, y_train_obs, y_val_obs = train_test_split(
         X_obs, y_obs, test_size=test_size, random_state=random_state

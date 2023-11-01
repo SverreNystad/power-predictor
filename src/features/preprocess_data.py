@@ -11,7 +11,7 @@ from src.features.feature_engineering import (
 )
 
 
-def fetch_preprocessed_data() -> (
+def fetch_preprocessed_data(drop_features: bool = True) -> (
     Tuple[
         pd.DataFrame,
         pd.DataFrame,
@@ -90,7 +90,7 @@ def fetch_preprocessed_data() -> (
         X_val_est_combined,
         y_train_est_combined,
         y_val_est_combined,
-    ) = prepare_data(train_observed_combined, train_estimated_combined)
+    ) = prepare_data(train_observed_combined, train_estimated_combined, drop_features=drop_features)
 
     return (
         X_train_obs_combined,
