@@ -12,6 +12,10 @@ __pycache__/
 # Models
 *.pkl
 
+#catboost info
+*.out
+*.tsv
+
 # Distribution / packaging
 .Python
 build/
