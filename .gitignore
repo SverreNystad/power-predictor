@@ -9,6 +9,9 @@ __pycache__/
 # 3d plots
 *.html
 
+# Models
+*.pkl
+
 # Distribution / packaging
 .Python
 build/
