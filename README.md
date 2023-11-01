@@ -51,7 +51,7 @@ After installing the project, run the jupyter notebook in the exploration direct
 
   ![quan-gos-chill](docs/bots/quan-gos-chill.png)
 
-  ![gosipon](docs/bots/gosipon.png)
+  ![gosipon](docs/bots/gospion.png)
 
   ![ryleena](docs/bots/ryleena.png)
 
