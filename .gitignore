@@ -13,6 +13,7 @@ __pycache__/
 *.pkl
 
 #catboost info
+catboost_info/
 *.out
 *.tsv
 
