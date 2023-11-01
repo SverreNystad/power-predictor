@@ -14,7 +14,7 @@
   <summary> <b> Table of Contents </b> </summary>
   <ol>
     <li>
-    <a href="#standard_python_application"> PROJECT NAME </a>
+    <a href="#ML power predictor"> Power Predictor </a>
     </li>
     <li>
       <a href="#Introduction">Introduction</a>
@@ -39,8 +39,28 @@
 ## Usage
 After installing the project, run the jupyter notebook in the exploration directory of the project.
 
+
+
+<details>
+ The task was setup so we fight Machine learning algorithms that the professor Ruslan Khalitov have made.
+ We have beaten the following bots:
+
+  ![gosborg](docs/bots/gosborg.png)
+
+  ![kenshi](docs/bots/kenshi.png)
+
+  ![quan-gos-chill](docs/bots/quan-gos-chill.png)
+
+  ![gosipon](docs/bots/gosipon.png)
+
+  ![ryleena](docs/bots/ryleena.png)
+
+  ![frostling](docs/bots/frostling.png)
+</details>
+
+
 ## Installation
-To install the PROJECT NAME, one needs to have all the prerequisites installed and set up, and follow the setup guild. The following sections will guide you through the process.
+To install the Power Predictor, one needs to have all the prerequisites installed and set up, and follow the setup guild. The following sections will guide you through the process.
 ### Prerequisites
 - Python 3.9 or higher
 - Jupyter Notebook
@@ -49,8 +69,8 @@ To install the PROJECT NAME, one needs to have all the prerequisites installed a
 ### Setup
 1. Clone the repository
 ```bash
-git clone https://github.com/USERNAME/REPONAME.git
-cd PROJECT NAME
+git clone https://github.com/SverreNystad/power-predictor.git
+cd power-predictor
 ```
 2. Create and run a virtual environment.
 
@@ -73,21 +93,11 @@ cd PROJECT NAME
 pip install -r requirements.txt
 ```
 
-4. Create a file called `.env` in the root directory of the project. Add the following lines to the file:
-```bash
-touch .env
-echo "SECRET=SECRET_VALUE" > .env # Remember to change SECRET_VALUE to your actual key
-```
-
 ## Tests
 To run all the tests, run the following command in the root directory of the project:
 ```bash
 pytest --cov
 coverage html # To generate a coverage report
-```
-If you do not want to run api tests, run the following command instead:
-```bash
-pytest -m "not apitest" --cov
 ```
 
 ## License
@@ -113,3 +123,36 @@ Licensed under the [MIT License](LICENSE). Because this is a template repository
 * **src/visualization:** Scripts to create exploratory and results oriented visualizations.
 
 ### **tests:** Unit tests for the project source code.
+
+## Contributors
+Three brave students that applied their knowledge of Machine Learning to beat the bots.
+
+
+<table>
+    <td align="center">
+        <a href="https://github.com/Gunnar2908">
+            <img src="https://github.com/Gunnar2908.png?size=100" width="100px;"/><br />
+            <sub><b>Gunnar Nystad</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/pskoland">
+            <img src="https://github.com/pskoland.png?size=100" width="100px;"/><br />
+            <sub><b>Peter Skoland</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/SverreNystad">
+            <img src="https://github.com/SverreNystad.png?size=100" width="100px;"/><br />
+            <sub><b>Sverre Nystad</b></sub>
+        </a>
+    </td>
+  
+  </tr>
+</table>
+
+# Thanks to
+
+* [Ruslan Khalitov](https://github.com/RuslanKhalitov) for the task and the bots. This task has been amazing and we have learned a lot.
+* Thanks to the group members for the great work and the good collaboration.
+* Thanks to our amazing Professor Zhirong Yang for great lectures and help.
