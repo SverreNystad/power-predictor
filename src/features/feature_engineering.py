@@ -528,20 +528,23 @@ def create_time_features_from_date(df: pd.DataFrame) -> pd.DataFrame:
 
 def get_sin_hour(date: datetime) -> float:
     HOURS_OF_DAY = 24
-    return math.sin(2 * math.pi * (date.hour) / 24)
+    return math.sin(2 * math.pi * (date.hour) / HOURS_OF_DAY)
 
 
 def get_cos_hour(date: datetime) -> float:
     HOURS_OF_DAY = 24
-    return math.cos(2 * math.pi * (date.hour) / 24)
+    return math.cos(2 * math.pi * (date.hour) / HOURS_OF_DAY)
 
 
 def get_sin_day(date: datetime) -> float:
-    return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
+    DAY_OF_YEAR = 365.25 # Add 0.25 to account for leap years
+    return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / DAY_OF_YEAR)
 
 
 def get_cos_day(date: datetime) -> float:
-    return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / 365.25)
+    DAY_OF_YEAR = 365.25 # Add 0.25 to account for leap years
+
+    return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / DAY_OF_YEAR)
 
 
 def create_polynomial_features(
