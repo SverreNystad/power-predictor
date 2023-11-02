@@ -8,8 +8,9 @@ def postprocess_data(x_test: pd.DataFrame, y_pred: pd.DataFrame) -> pd.DataFrame
     """Postprocess the data to set the predicted values to 0 at the correct times."""
     
     # Set the predicted values to 0 at the correct times
-    y_pred = set_0_pv_at_times(x_test, y_pred, "a", [22, 23, 0])
-    y_pred = set_0_pv_at_times(x_test, y_pred, "c", [23])
+    y_pred = set_0_pv_at_times(x_test, y_pred, "a", [0])
+    y_pred = set_0_pv_at_times(x_test, y_pred, "b", [22, 23, 0])
+    y_pred = set_0_pv_at_times(x_test, y_pred, "c", [22, 23, 0])
 
     return y_pred
 
