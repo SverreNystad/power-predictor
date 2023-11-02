@@ -66,7 +66,8 @@ def prepare_data(
 
     # Split the data into features (X) and target (y)
     X_obs = train_observed_clean.drop(
-        columns=["time", "pv_measurement", "date_forecast", "date_calc"] , errors="ignore"
+        columns=["time", "pv_measurement", "date_forecast", "date_calc"],
+        errors="ignore",
     )
     y_obs = train_observed_clean["pv_measurement"]
 
@@ -152,15 +153,18 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
 
     # Remove positive pv measurements when sun_elevation is negative
     threshold = -10
-    df = df.drop(df[(df["sun_elevation:d"] < threshold) & (df["pv_measurement"] > 0)].index)
+    df = df.drop(
+        df[(df["sun_elevation:d"] < threshold) & (df["pv_measurement"] > 0)].index
+    )
     return df
 
 
-
-def remove_outliers(df: pd.DataFrame, lower_bound: float = 0.1, upper_bound: float = 0.9) -> pd.DataFrame:
-    '''
+def remove_outliers(
+    df: pd.DataFrame, lower_bound: float = 0.1, upper_bound: float = 0.9
+) -> pd.DataFrame:
+    """
     Removing outliers using IQR method
-    '''
+    """
 
     columns_to_check = [col for col in df.columns if col != "pv_measurement"]
     for col in columns_to_check:
@@ -168,15 +172,16 @@ def remove_outliers(df: pd.DataFrame, lower_bound: float = 0.1, upper_bound: flo
         Q1 = df[col].quantile(lower_bound)
         Q3 = df[col].quantile(upper_bound)
         IQR = Q3 - Q1
-        
+
         # Define outlier bounds
         lower_bound = Q1 - 1.5 * IQR
         upper_bound = Q3 + 1.5 * IQR
-        
+
         # Filter the data
         df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
-    
+
     return df
+
 
 def remove_night_light_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     # Remove all rows where pv_measurement has the same value for 6 timesteps and not is 0 remove them
@@ -386,6 +391,45 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     return data_frame
 
 
+def ratio(df: pd.DataFrame) -> pd.DataFrame:
+    import pandas as pd
+    from sklearn.linear_model import LinearRegression
+
+    # Sample DataFrame (replace this with your actual DataFrame)
+
+    # Calculate total irradiance
+    df["total_radiance"] = df["direct_radiance"] + df["diffuse_radiance"]
+
+    # Set up the linear regression problem
+    X = df[["total_radiance", "ambient_temp"]]
+    y = df["pv_measurement"]
+
+    # Train a linear regression model
+    model = LinearRegression()
+    model.fit(X, y)
+
+    # Extract coefficients
+    a = model.coef_[0]  # Coefficient for total_radiance
+    b = model.coef_[1]  # Coefficient for ambient_temp
+    c = model.intercept_
+
+    # Estimate the parameters
+    T_ref = 25  # Reference temperature, you can set this based on your understanding
+    eta = a  # Assuming that a corresponds to efficiency
+    beta = (
+        -b / a
+    )  # Assuming linear relationship between power drop and temperature increase
+
+    # Estimate panel temperature
+    df["T_panel"] = df["ambient_temp"] + (df["total_radiance"] / a) * (1 - eta)
+
+    # Calculate the desired ratio
+    df["ratio"] = 1 - beta * (df["T_panel"] - T_ref)
+
+    # Display the DataFrame
+    return df
+
+
 def calculate_surface_temp(row):
     # Constants
     R = 287  # Specific gas constant for dry air, J kg^-1 K^-1
@@ -544,16 +588,18 @@ def trig_transform(df: pd.DataFrame, column: str, period: int):
     return df_trig
 
 
-def create_expected_pv_based_on_previous_years_same_day(df: pd.DataFrame) -> pd.DataFrame:
+def create_expected_pv_based_on_previous_years_same_day(
+    df: pd.DataFrame,
+) -> pd.DataFrame:
     """
     Create a mean pv_measurement for each data point based on the previous years same day and hour
     Add this as a feature to the data frame
-    
+
     Parameters:
-        df (pd.DataFrame): DataFrame containing at least columns: 
-                           location_a, location_b, location_c, date_forecast, 
+        df (pd.DataFrame): DataFrame containing at least columns:
+                           location_a, location_b, location_c, date_forecast,
                            pv_measurement, sin_day_of_year, cos_day_of_year, sin_hour, cos_hour
-    
+
     Returns:
         pd.DataFrame: DataFrame with additional feature of mean pv_measurement based on historical data
     """
@@ -574,37 +620,50 @@ def create_expected_pv_based_on_previous_years_same_day(df: pd.DataFrame) -> pd.
     ):
         return df
     # Identify the location from the binary flags
-    df['location'] = df[['location_a', 'location_b', 'location_c']].idxmax(axis=1)
-    
+    df["location"] = df[["location_a", "location_b", "location_c"]].idxmax(axis=1)
+
     # Calculate mean pv_measurement for each location, sin_day_of_year, cos_day_of_year, sin_hour, and cos_hour
-    mean_pv = df.groupby(['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'])['pv_measurement'].mean().reset_index()
-    mean_pv.rename(columns={'pv_measurement': 'mean_pv_measurement'}, inplace=True)
-    
+    mean_pv = (
+        df.groupby(
+            ["location", "sin_day_of_year", "cos_day_of_year", "sin_hour", "cos_hour"]
+        )["pv_measurement"]
+        .mean()
+        .reset_index()
+    )
+    mean_pv.rename(columns={"pv_measurement": "mean_pv_measurement"}, inplace=True)
+
     # Merge mean_pv_measurement back to the original DataFrame
-    df = pd.merge(df, mean_pv, on=['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'], how='left')
-    df.drop(columns=['location'], inplace=True)
+    df = pd.merge(
+        df,
+        mean_pv,
+        on=["location", "sin_day_of_year", "cos_day_of_year", "sin_hour", "cos_hour"],
+        how="left",
+    )
+    df.drop(columns=["location"], inplace=True)
     return df
 
 
-def create_simple_rolling_mean(df: pd.DataFrame, column: str, window: int) -> pd.DataFrame:
+def create_simple_rolling_mean(
+    df: pd.DataFrame, column: str, window: int
+) -> pd.DataFrame:
     """
     Creates a simple rolling mean feature for a given column in a DataFrame.
-    
+
     Args:
         df: DataFrame containing your time-series data.
         column: The name of the column for which you want to create lagged features.
-        window: The size of the window for calculating the rolling mean. 
+        window: The size of the window for calculating the rolling mean.
                 For example, if window=10, it will take the previous 10 days.
     """
     # Ensure the DataFrame is sorted by date
-    df = df.sort_values(by='date_forecast')
-    
+    df = df.sort_values(by="date_forecast")
+
     # Ensure 'date_forecast' is in datetime format
-    df['date_forecast'] = pd.to_datetime(df['date_forecast'])
-    
+    df["date_forecast"] = pd.to_datetime(df["date_forecast"])
+
     # Calculate the rolling mean
-    df['rolling_mean_of_' + column] = df[column].rolling(window=window).mean()
-    
+    df["rolling_mean_of_" + column] = df[column].rolling(window=window).mean()
+
     return df
 
 
