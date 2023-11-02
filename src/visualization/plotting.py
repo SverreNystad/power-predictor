@@ -31,11 +31,13 @@ def parse_feature_name(feature_name: str) -> str:
     return feature_name.replace(":", "_")
 
 
-def plot_pv_measurement(show: bool = False) -> None:
+def plot_pv_measurement(pv_a = train_a, pv_b = train_b, pv_c = train_c, show: bool = False) -> None:
     fig, axs = plt.subplots(3, 1, figsize=(20, 10), sharex=True)
-    train_a.set_index("time").plot(ax=axs[0], title="location A", color="red")
-    train_b.set_index("time").plot(ax=axs[1], title="location B", color="red")
-    train_c.set_index("time").plot(ax=axs[2], title="location C", color="red")
+
+
+    pv_a.set_index("date_forecast")["pv_measurement"].plot(ax=axs[0], title="location A", color="red")
+    pv_b.set_index("date_forecast")["pv_measurement"].plot(ax=axs[1], title="location B", color="red")
+    pv_c.set_index("date_forecast")["pv_measurement"].plot(ax=axs[2], title="location C", color="red")
 
     plt.ylabel("PV Measurement")
     plt.xlabel("Date")
