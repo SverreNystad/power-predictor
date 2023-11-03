@@ -335,6 +335,9 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     #     / (data_frame["direct_rad_1h:J"] + data_frame["diffuse_rad_1h:J"])
     # ).fillna(1)
 
+    # data_frame["rime"] = data_frame["prob_rime:p"].apply(lambda x: 1 if x > 0 else 0)
+    # data_frame = data_frame.drop("prob_rime:p", axis=1)
+
     data_frame["is_freezing"] = (data_frame["t_1000hPa:K"] < 273).astype(int)
 
     data_frame["is_snow"] = (data_frame[snow_columns] > 0).any(axis=1).astype(int)
@@ -537,12 +540,12 @@ def get_cos_hour(date: datetime) -> float:
 
 
 def get_sin_day(date: datetime) -> float:
-    DAY_OF_YEAR = 365.25 # Add 0.25 to account for leap years
+    DAY_OF_YEAR = 365.25  # Add 0.25 to account for leap years
     return math.sin(2 * math.pi * (date.timetuple().tm_yday - 1) / DAY_OF_YEAR)
 
 
 def get_cos_day(date: datetime) -> float:
-    DAY_OF_YEAR = 365.25 # Add 0.25 to account for leap years
+    DAY_OF_YEAR = 365.25  # Add 0.25 to account for leap years
 
     return math.cos(2 * math.pi * (date.timetuple().tm_yday - 1) / DAY_OF_YEAR)
 
