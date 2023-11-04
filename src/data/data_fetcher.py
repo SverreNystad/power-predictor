@@ -64,10 +64,6 @@ def create_preprocessed_data():
     X_train_observed_a = create_expected_pv_based_on_previous_years_same_day(X_train_observed_a)
     X_train_observed_b = create_expected_pv_based_on_previous_years_same_day(X_train_observed_b)
     X_train_observed_c = create_expected_pv_based_on_previous_years_same_day(X_train_observed_c)
-    
-
-
-
 
 def create_expected_pv_based_on_previous_years_same_day(df: pd.DataFrame) -> pd.DataFrame:
     """
