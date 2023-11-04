@@ -799,25 +799,13 @@ def temporal_alignment(
         direction='forward'
     )
 
+    # Drop the time columns
+    train_observed = train_observed.drop(columns=["hour"])
+    train_estimated = train_estimated.drop(columns=["hour"])
     return train_observed, train_estimated
 
 
 def temporal_alignment_tests(test: pd.DataFrame) -> Tuple[pd.DataFrame]:
-    return aggregate_rows(test)
-
-
-def aggregate_rows(df: pd.DataFrame) -> pd.DataFrame:
-    # Create a 'group' column to group every 4 rows together
-    df["group"] = df.index // 4
-
-    # Define the aggregation functions
-    aggregation = {col: "mean" for col in df.columns if col != "date_forecast"}
-    aggregation["date_forecast"] = "first"
-
-    # Group by the 'group' column and aggregate
-    df_agg = df.groupby("group").agg(aggregation).reset_index(drop=True)
-
-    # Drop the 'group' column from the original dataframe
-    df_agg.drop("group", axis=1, inplace=True)
-
-    return df_agg
+    print("Aligning temporal resolution of test data")
+    print(f"test.shape = {test.shape}, {test.head()}")
+    return test
