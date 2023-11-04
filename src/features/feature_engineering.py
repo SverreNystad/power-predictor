@@ -764,7 +764,7 @@ def temporal_alignment(
     train: pd.DataFrame, observed: pd.DataFrame, estimated: pd.DataFrame
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Aligns the temporal resolution of the datasets by aggregating the 15-min interval weather data to hourly intervals.
+    Aligns the temporal resolution of the datasets by propagating the hourly pv_measurement to 15-min intervals.
 
     Args:
         train (pd.DataFrame): The training targets DataFrame.
@@ -780,24 +780,23 @@ def temporal_alignment(
     observed["date_forecast"] = pd.to_datetime(observed["date_forecast"])
     estimated["date_forecast"] = pd.to_datetime(estimated["date_forecast"])
 
-    # Set the date_forecast column as index for resampling
-    observed.set_index("date_forecast", inplace=True)
-    estimated.set_index("date_forecast", inplace=True)
+    # Round the time to the nearest hour
+    observed['hour'] = observed['date_forecast'].dt.round('H')
+    estimated['hour'] = estimated['date_forecast'].dt.round('H')
 
-    # Resample the weather data to hourly intervals and aggregate the values by mean
-    observed_resampled = observed.resample("1H").mean()
-    estimated_resampled = estimated.resample("1H").mean()
-
-    # Reset the index after resampling
-    observed_resampled.reset_index(inplace=True)
-    estimated_resampled.reset_index(inplace=True)
-
-    # Merge the aggregated weather data with the solar production data based on the timestamp
-    train_observed = pd.merge(
-        train, observed_resampled, how="left", left_on="time", right_on="date_forecast"
+    # Merge the data with the solar production data based on the rounded timestamp
+    train_observed = pd.merge_asof(
+        observed.sort_values('hour'), 
+        train.sort_values('time'), 
+        left_on='hour', right_on='time',
+        direction='forward'
     )
-    train_estimated = pd.merge(
-        train, estimated_resampled, how="left", left_on="time", right_on="date_forecast"
+
+    train_estimated = pd.merge_asof(
+        estimated.sort_values('hour'), 
+        train.sort_values('time'), 
+        left_on='hour', right_on='time',
+        direction='forward'
     )
 
     return train_observed, train_estimated
