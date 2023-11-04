@@ -95,6 +95,4 @@ def create_expected_pv_based_on_previous_years_same_day(df: pd.DataFrame) -> pd.
     df = pd.merge(df, mean_pv, on=['location', 'sin_day_of_year', 'cos_day_of_year', 'sin_hour', 'cos_hour'], how='left')
     df.drop(columns=['location'], inplace=True)
     return df
-if __name__ == "__main__":
-    data = get_raw_data()
-    print(data[0].head())
+
