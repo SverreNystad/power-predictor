@@ -88,10 +88,10 @@ def fetch_preprocessed_data(
         [train_estimated_a, train_estimated_b, train_estimated_c], ignore_index=True
     )
 
-    print("train_observed_combined.isna().sum())")
-    print(train_observed_combined.isna().sum())
-    print("train_estimated_combinedtrain_observed_combined.isna().sum())")
-    print(train_estimated_combined.isna().sum())
+    # print("train_observed_combined.isna().sum())")
+    # print(train_observed_combined.isna().sum())
+    # print("train_estimated_combinedtrain_observed_combined.isna().sum())")
+    # print(train_estimated_combined.isna().sum())
 
     # Prepare the combined dataset by handling missing values and splitting the data
     (
@@ -231,6 +231,4 @@ def interpolate_and_report(df, column="pv_measurement", max_gap=4):
             changes_count += len(gap)
 
     changes_df = pd.DataFrame(changes)
-
-    print(f"Total changes made: {changes_count}")
     return df, changes_df
