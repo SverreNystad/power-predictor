@@ -234,6 +234,3 @@ def interpolate_and_report(df, column="pv_measurement", max_gap=4):
 
     print(f"Total changes made: {changes_count}")
     return df, changes_df
-
-
-def set_positive_zero(df: pd.DataFrame):
