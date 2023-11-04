@@ -9,6 +9,9 @@ find_time_cos = lambda hour: math.cos(2 * math.pi * (hour) / 24)
 def postprocess_data(x_test: pd.DataFrame, y_pred: pd.DataFrame) -> pd.DataFrame:
     """Postprocess the data to set the predicted values to 0 at the correct times."""
     
+    # Take the average of the four 15 minute intervals
+    y_pred = y_pred.groupby(y_pred.index // 4).mean()
+
     # Cap the min and max values for each location for each hour
     y_pred = cap_min_max_values(x_test, y_pred)
 
