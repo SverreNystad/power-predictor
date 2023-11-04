@@ -11,6 +11,7 @@ def postprocess_data(x_test: pd.DataFrame, y_pred: pd.DataFrame) -> pd.DataFrame
     
     # Take the average of the four 15 minute intervals
     y_pred = y_pred.groupby(y_pred.index // 4).mean()
+    x_test = x_test.groupby(x_test.index // 4).mean()
 
     # Cap the min and max values for each location for each hour
     y_pred = cap_min_max_values(x_test, y_pred)
