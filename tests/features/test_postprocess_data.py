@@ -13,8 +13,6 @@ def test_zero_predictions():
     # Assert
     assert not np.all(post_processed_predictions == 0)
 
-    assert not np.all(post_processed_predictions == 0)
-
 def test_to_large_predictions():
     x_test_whole = get_preprocessed_test_data()
     to_large_value = 100000000
