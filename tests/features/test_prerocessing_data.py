@@ -64,3 +64,12 @@ def test_get_preprocessed_test_data_has_no_missing_values():
     
     # Check that the test data has no missing values
     assert x_test_whole.isnull().sum().sum() == 0
+
+def test_get_preprocessed_test_data_has_same_amount_of_rows_as_final_test():
+    # Arrange
+    x_test_whole = get_preprocessed_test_data()
+    SUBMISSION_LENGTH = 2660
+    
+    # Check that the test data has the same number of rows as the final test data
+    assert x_test_whole.shape[0] == SUBMISSION_LENGTH
+    
