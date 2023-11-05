@@ -57,3 +57,10 @@ def test_get_preprocessed_test_data_has_same_features_as_training():
     
     # Check that the test data has the same number of features as the training data
     assert x_test_whole.shape[1] == X_train_obs_combined.shape[1] == X_val_obs_combined.shape[1] == X_train_est_combined.shape[1] == X_val_est_combined.shape[1]
+
+def test_get_preprocessed_test_data_has_no_missing_values():
+    # Arrange
+    x_test_whole = get_preprocessed_test_data()
+    
+    # Check that the test data has no missing values
+    assert x_test_whole.isnull().sum().sum() == 0
