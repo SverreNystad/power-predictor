@@ -50,3 +50,10 @@ def test_fetch_preprocessed_data_gives_same_number_of_features():
     assert X_train_obs_combined.shape[1] == X_val_obs_combined.shape[1] == X_train_est_combined.shape[1] == X_val_est_combined.shape[1]
     
 
+def test_get_preprocessed_test_data_has_same_features_as_training():
+    # Arrange
+    X_train_obs_combined, X_val_obs_combined, _, _, X_train_est_combined, X_val_est_combined, _, _ = fetch_preprocessed_data()
+    x_test_whole = get_preprocessed_test_data()
+    
+    # Check that the test data has the same number of features as the training data
+    assert x_test_whole.shape[1] == X_train_obs_combined.shape[1] == X_val_obs_combined.shape[1] == X_train_est_combined.shape[1] == X_val_est_combined.shape[1]
