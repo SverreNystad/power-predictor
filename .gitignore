@@ -12,6 +12,9 @@ __pycache__/
 # Models
 *.pkl
 
+# AutoGluon 
+AutogluonModels/
+
 #catboost info
 catboost_info/
 *.out
