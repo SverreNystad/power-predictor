@@ -1,6 +1,4 @@
-
-
-from src.features.preprocess_data import fetch_preprocessed_data
+from src.features.preprocess_data import fetch_preprocessed_data, get_preprocessed_test_data
 
 
 def test_fetch_preprocessed_data_pairs_pv_to_correct_x_date():
@@ -25,3 +23,22 @@ def test_fetch_preprocessed_data_pairs_pv_to_correct_x_date():
     assert X_val_obs_combined["pv_measurement"] == y_val_obs_combined
     assert X_train_est_combined["pv_measurement"] == y_train_est_combined
     assert X_val_est_combined["pv_measurement"] == y_val_est_combined
+
+def test_fetch_preprocessed_data_gives_data():
+    X_train_obs_combined, X_val_obs_combined, y_train_obs_combined, y_val_obs_combined, X_train_est_combined, X_val_est_combined, y_train_est_combined, y_val_est_combined = fetch_preprocessed_data()
+    
+    # Check that the data is not empty
+    assert X_train_obs_combined.shape[0] > 0
+    assert X_val_obs_combined.shape[0] > 0
+    assert y_train_obs_combined.shape[0] > 0
+    assert y_val_obs_combined.shape[0] > 0
+    assert X_train_est_combined.shape[0] > 0
+    assert X_val_est_combined.shape[0] > 0
+    assert y_train_est_combined.shape[0] > 0
+    assert y_val_est_combined.shape[0] > 0
+
+    # Check that the x and y data have the same number of rows
+    assert X_train_obs_combined.shape[0] == y_train_obs_combined.shape[0]
+    assert X_val_obs_combined.shape[0] == y_val_obs_combined.shape[0]
+    assert X_train_est_combined.shape[0] == y_train_est_combined.shape[0]
+    assert X_val_est_combined.shape[0] == y_val_est_combined.shape[0]
