@@ -522,11 +522,29 @@ def create_time_features_from_date(df: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame: Data frame copy with new features.
 
     """
+    # df["days_from_peak"] = df["date_forecast"].apply(nearest_june_21st)
     df["sin_day_of_year"] = df["date_forecast"].apply(get_sin_day)
     df["cos_day_of_year"] = df["date_forecast"].apply(get_cos_day)
     df["sin_hour"] = df["date_forecast"].apply(get_sin_hour)
     df["cos_hour"] = df["date_forecast"].apply(get_cos_hour)
     return df
+
+
+def nearest_june_21st(date):
+    from datetime import datetime, timedelta
+
+    # Find June 21st of the same year and the next year
+    this_year = datetime(date.year, 6, 21)
+    next_year = datetime(date.year + 1, 6, 21)
+    last_year = datetime(date.year - 1, 6, 21)
+
+    # Calculate the absolute difference in days
+    days_this_year = abs((date - this_year).days)
+    days_next_year = abs((date - next_year).days)
+    days_last_year = abs((date - last_year).days)
+
+    # Return the smallest difference
+    return min(days_this_year, days_next_year, days_last_year)
 
 
 def get_sin_hour(date: datetime) -> float:
