@@ -72,4 +72,18 @@ def test_get_preprocessed_test_data_has_same_amount_of_rows_as_final_test():
     
     # Check that the test data has the same number of rows as the final test data
     assert x_test_whole.shape[0] == SUBMISSION_LENGTH
+
+def test_get_preprocessed_test_data_has_correct_amount_from_each_location():
+    # Arrange
+    x_test_whole = get_preprocessed_test_data()
+    SUBMISSION_LENGTH = 2160
+    
+    x_test_whole_a = x_test_whole[x_test_whole["location_a"] == 1]
+    x_test_whole_b = x_test_whole[x_test_whole["location_b"] == 1]
+    x_test_whole_c = x_test_whole[x_test_whole["location_c"] == 1]
+
+    # Check that they have the correct amount of rows
+    assert x_test_whole_a.shape[0] == SUBMISSION_LENGTH/3
+    assert x_test_whole_b.shape[0] == SUBMISSION_LENGTH/3
+    assert x_test_whole_c.shape[0] == SUBMISSION_LENGTH/3
     
