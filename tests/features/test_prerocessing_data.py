@@ -86,7 +86,7 @@ def test_get_preprocessed_test_data_has_correct_amount_from_each_location():
     assert x_test_whole_a.shape[0] == SUBMISSION_LENGTH/3
     assert x_test_whole_b.shape[0] == SUBMISSION_LENGTH/3
     assert x_test_whole_c.shape[0] == SUBMISSION_LENGTH/3
-    
+
 def test_get_preprocessed_test_data_all_rows_have_location():
     # Arrange
     x_test_whole = get_preprocessed_test_data()
