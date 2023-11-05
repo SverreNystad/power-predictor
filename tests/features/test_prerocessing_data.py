@@ -42,3 +42,11 @@ def test_fetch_preprocessed_data_gives_data():
     assert X_val_obs_combined.shape[0] == y_val_obs_combined.shape[0]
     assert X_train_est_combined.shape[0] == y_train_est_combined.shape[0]
     assert X_val_est_combined.shape[0] == y_val_est_combined.shape[0]
+
+def test_fetch_preprocessed_data_gives_same_number_of_features():
+    X_train_obs_combined, X_val_obs_combined, _, _, X_train_est_combined, X_val_est_combined, _, _ = fetch_preprocessed_data()
+    
+    # Check that the data has the same number of features
+    assert X_train_obs_combined.shape[1] == X_val_obs_combined.shape[1] == X_train_est_combined.shape[1] == X_val_est_combined.shape[1]
+    
+
