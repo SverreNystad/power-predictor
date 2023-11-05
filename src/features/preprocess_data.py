@@ -122,8 +122,6 @@ def get_preprocessed_test_data() -> pd.DataFrame:
         X_test_estimated_c,
     ) = get_raw_data()
 
-    print(f"X_test_estimated_a.shape = {X_test_estimated_a.shape}, X_test_estimated_b.shape = {X_test_estimated_b.shape}, X_test_estimated_c.shape = {X_test_estimated_c.shape}")
-    
     # Align the test data to the same time as the training data
     X_test_estimated_a = temporal_alignment_tests(X_test_estimated_a)
     X_test_estimated_b = temporal_alignment_tests(X_test_estimated_b)
