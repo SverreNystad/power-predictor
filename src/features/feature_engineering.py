@@ -269,9 +269,10 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     if "date_calc" not in data_frame.columns:
         data_frame["time_since_prediction"] = 0
     else:
-        data_frame["time_since_prediction"] = (
-            data_frame["date_forecast"] - data_frame["date_calc"]
-        ).dt.total_seconds() / 3600
+        data_frame["time_since_prediction"] = 1
+        # data_frame["time_since_prediction"] = (
+        #     data_frame["date_forecast"] - data_frame["date_calc"]
+        # ).dt.total_seconds() / 3600
 
     # data_frame["time_since_prediction"] =
 
