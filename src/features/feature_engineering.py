@@ -302,6 +302,18 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["effective_cloud_cover:p"] > 30, 1, 0
     )
 
+    data_frame["sun_addition"] = (
+        data_frame["diffuse_rad:W"] + data_frame["direct_rad:W"]
+    )
+
+    data_frame["direct_rad_cloud_interaction"] = data_frame["direct_rad:W"] * (
+        100 - data_frame["effective_cloud_cover:p"]
+    )
+
+    data_frame["modified_solar_elevation_squared"] = (
+        data_frame["modified_solar_elevation"] ** 0.5
+    )
+
     snow_columns = [
         "snow_depth:cm",
         "fresh_snow_12h:cm",
@@ -324,10 +336,6 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     # data_frame["any_precip"] = (
     #     data_frame["precip_5min:mm"] * data_frame["precip_type_5min:idx"]
     # )
-
-    data_frame["sun_addition"] = (
-        data_frame["diffuse_rad:W"] + data_frame["direct_rad:W"]
-    )
 
     # data_frame["sun addition W to 1h ratio"] = (
     #     data_frame["sun_addition"]
