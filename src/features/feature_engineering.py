@@ -79,7 +79,8 @@ def prepare_data(
 
     if drop_features:
         X_est = train_estimated_clean.drop(
-            columns=["time", "pv_measurement", "date_calc", "date_forecast"]
+            columns=["time", "pv_measurement", "date_calc", "date_forecast"],
+            errors="ignore",
         )
     else:
         X_est = train_estimated_clean
