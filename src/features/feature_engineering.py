@@ -270,9 +270,7 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     if "date_calc" not in data_frame.columns:
         data_frame["time_since_prediction"] = 0
     else:
-        data_frame["time_since_prediction"] = (
-            data_frame["date_forecast"] - data_frame["date_calc"]
-        ).dt.total_seconds() / 3600
+        data_frame["time_since_prediction"] = 1
 
     # data_frame["time_since_prediction"] =
 
@@ -311,9 +309,9 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         100 - data_frame["effective_cloud_cover:p"]
     )
 
-    data_frame["modified_solar_elevation_squared"] = (
-        data_frame["modified_solar_elevation"] ** 0.5
-    )
+    # data_frame["modified_solar_elevation_squared"] = (
+    #     data_frame["modified_solar_elevation"] ** 0.5
+    # )
 
     snow_columns = [
         "snow_depth:cm",
@@ -353,18 +351,18 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
     data_frame["is_rain"] = (data_frame["precip_5min:mm"] > 0).astype(int)
 
     data_frame = data_frame.drop("snow_drift:idx", axis=1)
-    data_frame = data_frame.drop("snow_depth:cm", axis=1)
-    data_frame = data_frame.drop("snow_water:kgm2", axis=1)
-    data_frame = data_frame.drop("fresh_snow_12h:cm", axis=1)
-    data_frame = data_frame.drop("fresh_snow_1h:cm", axis=1)
-    data_frame = data_frame.drop("fresh_snow_24h:cm", axis=1)
-    data_frame = data_frame.drop("fresh_snow_3h:cm", axis=1)
-    data_frame = data_frame.drop("fresh_snow_6h:cm", axis=1)
-    data_frame = data_frame.drop("snow_melt_10min:mm", axis=1)
+    # data_frame = data_frame.drop("snow_depth:cm", axis=1)
+    # data_frame = data_frame.drop("snow_water:kgm2", axis=1)
+    # data_frame = data_frame.drop("fresh_snow_12h:cm", axis=1)
+    # data_frame = data_frame.drop("fresh_snow_1h:cm", axis=1)
+    # data_frame = data_frame.drop("fresh_snow_24h:cm", axis=1)
+    # data_frame = data_frame.drop("fresh_snow_3h:cm", axis=1)
+    # data_frame = data_frame.drop("fresh_snow_6h:cm", axis=1)
+    # data_frame = data_frame.drop("snow_melt_10min:mm", axis=1)
 
-    data_frame = data_frame.drop("msl_pressure:hPa", axis=1)
-    data_frame = data_frame.drop("pressure_100m:hPa", axis=1)
-    data_frame = data_frame.drop("sfc_pressure:hPa", axis=1)
+    # data_frame = data_frame.drop("msl_pressure:hPa", axis=1)
+    # data_frame = data_frame.drop("pressure_100m:hPa", axis=1)
+    # data_frame = data_frame.drop("sfc_pressure:hPa", axis=1)
 
     # Add maximum pv_measurement based on location
     # max_pv_a = 5733.42
