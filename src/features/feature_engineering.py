@@ -274,11 +274,11 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
 
     # data_frame["time_since_prediction"] =
 
-    # data_frame["residual_radiation"] = (
-    #     data_frame["clear_sky_rad:W"]
-    #     - data_frame["direct_rad:W"]
-    #     - data_frame["diffuse_rad:W"]
-    # )
+    data_frame["residual_radiation"] = (
+        data_frame["clear_sky_rad:W"]
+        - data_frame["direct_rad:W"]
+        - data_frame["diffuse_rad:W"]
+    )
 
     # WAS WORSE
     # data_frame["effective_radiation2"] = np.where(
@@ -293,9 +293,9 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         data_frame["effective_cloud_cover:p"] / data_frame["total_cloud_cover:p"],
     )
 
-    # data_frame["diffuse_cloud_conditional_interaction"] = data_frame[
-    #     "diffuse_rad:W"
-    # ].where(data_frame["effective_cloud_cover:p"] < 0.3, 0)
+    data_frame["diffuse_cloud_conditional_interaction"] = data_frame[
+        "diffuse_rad:W"
+    ].where(data_frame["effective_cloud_cover:p"] < 0.3, 0)
 
     data_frame["cloud_cover_over_30%"] = np.where(
         data_frame["effective_cloud_cover:p"] > 30, 1, 0
@@ -309,9 +309,11 @@ def feature_engineer(data_frame: pd.DataFrame) -> pd.DataFrame:
         100 - data_frame["effective_cloud_cover:p"]
     )
 
-    # data_frame["modified_solar_elevation_squared"] = (
-    #     data_frame["modified_solar_elevation"] ** 0.5
-    # )
+    data_frame["modified_solar_elevation_squared"] = (
+        data_frame["modified_solar_elevation"] ** 0.5
+    )
+    
+    # data_frame["sun_addition_squared"] = data_frame["sun_addition"] ** 2
 
     snow_columns = [
         "snow_depth:cm",
