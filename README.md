@@ -40,10 +40,9 @@
 After installing the project, run the jupyter notebook in the exploration directory of the project.
 
 
-
+The task was setup so we fight Machine learning algorithms that the professor Ruslan Khalitov have made.
 <details>
- The task was setup so we fight Machine learning algorithms that the professor Ruslan Khalitov have made.
- We have beaten the following bots:
+  <summary><b> We have beaten the following bots: </b></summary>
 
   ![gosborg](docs/bots/gosborg.png)
 
@@ -57,6 +56,13 @@ After installing the project, run the jupyter notebook in the exploration direct
 
   ![frostling](docs/bots/frostling.png)
 
+  ![La La Lizard](docs/bots/la-la-lizard.png)
+
+  ![KEN-O](docs/bots/ken-o.png)
+
+  ![Shao RyKhan](docs/bots/shao-rykhan.png)
+
+  ![Alt text](docs/bots/goslightning.png)
 </details>
 
 
