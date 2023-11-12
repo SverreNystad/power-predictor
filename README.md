@@ -34,7 +34,7 @@
 
 ## Introduction
 
-
+![Alt text](docs/model_image.png)
 
 ## Usage
 After installing the project, run the jupyter notebook in the exploration directory of the project.
@@ -56,6 +56,7 @@ After installing the project, run the jupyter notebook in the exploration direct
   ![ryleena](docs/bots/ryleena.png)
 
   ![frostling](docs/bots/frostling.png)
+
 </details>
 
 
