@@ -6,11 +6,15 @@ __pycache__/
 # C extensions
 *.so
 
+CatBoost_Multi_segregated.ipynb
 # 3d plots
 *.html
 
 # Models
 *.pkl
+
+# AutoGluon 
+AutogluonModels/
 
 #catboost info
 catboost_info/
