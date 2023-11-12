@@ -2,6 +2,7 @@ from datetime import datetime
 import pandas as pd
 from typing import List, Tuple
 import numpy as np
+from scipy.interpolate import interp1d
 from sklearn.model_selection import train_test_split
 from scipy.stats import skew
 import numpy as np
@@ -56,7 +57,6 @@ def prepare_data(
     train_estimated_clean = train_estimated.dropna(
         subset=["visibility:m", "pv_measurement"]
     )
-
     # Remove discrepancies
     train_observed_clean = remove_discrepancies(train_observed_clean)
     train_estimated_clean = remove_discrepancies(train_estimated_clean)
@@ -146,6 +146,7 @@ def remove_discrepancies(df: pd.DataFrame) -> pd.DataFrame:
     df = remove_zero_value_discrepancies(df)
     df = remove_faulty_zero_measurements_for_direct_sun_light(df)
     # df = remove_outliers(df)
+
     return df
 
 
@@ -164,9 +165,10 @@ def remove_positive_pv_in_night(df: pd.DataFrame) -> pd.DataFrame:
 
     # Remove positive pv measurements when sun_elevation is negative
     threshold = -10
-    df = df.drop(
-        df[(df["sun_elevation:d"] < threshold) & (df["pv_measurement"] > 0)].index
-    )
+    df.loc[
+        (df["sun_elevation:d"] < threshold) & (df["pv_measurement"] > 0),
+        "pv_measurement",
+    ] = 0
     return df
 
 
