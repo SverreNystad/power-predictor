@@ -45,8 +45,9 @@ The task was setup so we fight Machine learning algorithms that the professor Ru
 [![Goslightning Talking to Students at start of semester](docs/bots/goslightning.png)](docs/supergosling_lowres.mp4)
 NB: Press the image to see the video of Goslightning Talking to Students at start of semester.
 
-**In the end we managed to beat all the bots, and we are very proud of our work.**
-
+This has been a great task and we have learned a lot. We have learned how to use machine learning to solve a real world problem.
+We have tried so many things, worked so many late nights and had a lot of fun, and many frustrations.
+**In the end we managed to beat all the bots, and we are very proud of our work. This giving us the best grade possible: A**
 <details>
   <summary><b> We have beaten the following bots: </b></summary>
 
