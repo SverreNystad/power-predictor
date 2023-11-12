@@ -41,6 +41,10 @@ After installing the project, run the jupyter notebook in the exploration direct
 
 
 The task was setup so we fight Machine learning algorithms that the professor Ruslan Khalitov have made.
+
+[![Goslightning Talking to Students at start of semester](docs/bots/goslightning.png)](docs/supergosling_lowres.mp4)
+
+
 <details>
   <summary><b> We have beaten the following bots: </b></summary>
 
