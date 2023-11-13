@@ -36,8 +36,11 @@
 
 ![Alt text](docs/model_image.png)
 
+This is an machine learning program made for the subject TDT4173 Machine learning. The task was to find the how much solar power measured in Photovoltaic (PV) systems, which convert sunlight into electricity. This dataset provided data for evaluating solar production dayahead forecasting methods. The data provider is [ANEO](https://www.aneo.com/). With information about all weather features [here](https://www.meteomatics.com/en/api/available-parameters/alphabetic-list/). These Data was all collected in Trondheim. The data was collected from 2019-01-01 to 2023-07-31. The data was collected every 15 minutes. The data was collected from 3 different locations. These locations were not equal. The power output of location A was 6 times larger then B and C. Location A also had solar panals that were differently angled then B and C. Making it much more trick to make a model learn.
+There was also much noise in the data, with outages and times during the night with zero sunlight that there was reported solar production, and also times at day were there was no power production due to external factors.
+
 ## Usage
-After installing the project, run the jupyter notebook in the exploration directory of the project.
+After cloning the project, Look at the final submission folder to see the feature engineering and the model training. The final model is saved in the models folder. To use the model, run the following code in the root directory of the project.
 
 
 The task was setup so we fight Machine learning algorithms that the professor Ruslan Khalitov have made.
@@ -45,9 +48,13 @@ The task was setup so we fight Machine learning algorithms that the professor Ru
 [![Goslightning Talking to Students at start of semester](docs/bots/goslightning.png)](docs/supergosling_lowres.mp4)
 NB: Press the image to see the video of Goslightning Talking to Students at start of semester.
 
+## Our journey
 This has been a great task and we have learned a lot. We have learned how to use machine learning to solve a real world problem.
 We have tried so many things, worked so many late nights and had a lot of fun, and many frustrations.
 **In the end we managed to beat all the bots, and we are very proud of our work. This giving us the best grade possible: A**
+The two bots that where the hardest to beat was Ryleena and Shao-RyKhan. This seems a bit strange as Goslightning is the best bot in the entire tournament, but the reason for this was that most of the project we had tried to to predictions on Kaggle (where we were graded) with bugs in the way we got the test data. This made us think that the bots were better than they actually were. We worked so hard on data that was flawed. It is very impressive that we climbed so high with several flaws in our test data. After fixing that we defeated Ryleena. 
+
+We learned that simpler models better models, as we had models so complex that they required to be ran for more then 24 hours before completion. We also learned that the data is the most important part of the project. We spent so much time on feature engineering and data cleaning. We also learned that it is important to have a good workflow, and that it is important to have a good structure of the project. We learned that cloud computing is very powerful and quite easy to setup.
 <details>
   <summary><b> We have beaten the following bots: </b></summary>
 
