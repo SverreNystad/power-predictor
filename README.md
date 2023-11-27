@@ -59,24 +59,25 @@ We learned that simpler models better models, as we had models so complex that t
   <summary><b> We have beaten the following bots: </b></summary>
 
   ![gosborg](docs/bots/gosborg.png)
-
+The Gosborg 2049 VT was random guessing between 0 and max pv measurement.
   ![kenshi](docs/bots/kenshi.png)
-
+Linear Regression, with no feature engineering.
   ![quan-gos-chill](docs/bots/quan-gos-chill.png)
-
+Average for each location + hour
   ![gosipon](docs/bots/gospion.png)
-
+Random Forest with minial feature engineering.
   ![ryleena](docs/bots/ryleena.png)
-
+AutoML, some feature engineering and random split.
   ![frostling](docs/bots/frostling.png)
-
+Frostling used CatBoost with good feature engineering and good hyperparams.
   ![La La Lizard](docs/bots/la-la-lizard.png)
-
+La La Lizard was the avereage of two teaching assistans models 
   ![KEN-O](docs/bots/ken-o.png)
-
+Keno used a single LightGBM with with change target and extensive hyperparameters search. It used one model for all 3 locations.
   ![Shao RyKhan](docs/bots/shao-rykhan.png)
-
+Shao TyKhan was made by using one of the best teaching assistants models, then averageing 10 different CatBoost models, having great hyper parameters and good feature engineering. But different to the other Virtual Teams was that it used one model for each location. 
   ![Alt text](docs/bots/goslightning.png)
+  Goslightning was the best model that the professor made. This model had extended time to be finished. It used Geometric mean of 10 models from the teaching assistanst, 1 model averaged from other teaching assistanst solutions, 2 LightGBM models from the professor. The 
 </details>
 
 
