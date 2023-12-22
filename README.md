@@ -99,17 +99,8 @@ To install the Power Predictor, one needs to have all the prerequisites installe
 
 ### Prerequisites
 
-- Python 3.9 or higher
-- Jupyter Notebook
-
-## Setup
-
-To setup the project, one needs to have all the prerequisites installed. Then one needs to clone the repository, setup a virtual environment, and install the dependencies. This is described in more detail below.
-
-### Prerequisites
-
 - Ensure Python 3.9 or newer is installed on your machine. [Download Python](https://www.python.org/downloads/)
-- Familiarity with basic Python package management and virtual environments is beneficial.
+- Jupyter Notebook
 
 ### Clone the repository
 
@@ -140,15 +131,19 @@ A virtual environment in Python is a self-contained directory that contains a Py
     ```
 
 3.  **Activate virtual environment**
-    To activate the environment, run the following command: \* For windows:
-    `cmd
-    source ./venv/Scripts/activate
-    `
+    To activate the environment, run the following command:
 
-        * For Linux / MacOS:
-            ```bash
-            source venv/bin/activate
-            ```
+    - For Windows
+
+      ```cmd
+      source ./venv/Scripts/activate
+      ```
+
+    - For Linux / MacOS:
+
+      ```bash
+      source venv/bin/activate
+      ```
 
     </details>
 
@@ -229,4 +224,4 @@ Three brave students that applied their knowledge of Machine Learning to beat th
 
 - [Ruslan Khalitov](https://github.com/RuslanKhalitov) for the task and the bots. This task has been amazing and we have learned a lot.
 - Thanks to the group members for the great work and the good collaboration.
-- Thanks to our amazing Professor [Zhirong Yang](https://www.ntnu.no/ansatte/yangzh)https://www.ntnu.no/ansatte/yangzh for great lectures.
+- Thanks to our amazing Professor [Zhirong Yang](https://www.ntnu.no/ansatte/yangzh) for great lectures.
