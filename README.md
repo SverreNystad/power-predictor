@@ -117,7 +117,7 @@ cd power-predictor
 
 A virtual environment in Python is a self-contained directory that contains a Python installation for a particular version of Python, plus a number of additional packages. Using a virtual environment for your project ensures that the project's dependencies are isolated from the system-wide Python and other Python projects. This is especially useful when working on multiple projects with differing dependencies, as it prevents potential conflicts between packages and allows for easy management of requirements.
 
-1. **To set up and use a virtual environment for MarketingAI:**
+1.  **To set up and use a virtual environment for Power Predictor:**
     First, install the virtualenv package using pip. This tool helps create isolated Python environments.
     ```bash
     pip install virtualenv
