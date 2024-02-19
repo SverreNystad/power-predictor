@@ -136,7 +136,7 @@ typing==3.7.4.3
 typing_extensions==4.8.0
 tzdata==2023.3
 uri-template==1.3.0
-urllib3==2.0.5
+urllib3==2.2.1
 ushlex==0.99.1
 wcwidth==0.2.6
 webcolors==1.13
